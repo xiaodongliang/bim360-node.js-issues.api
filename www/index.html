@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BIM 360 Issue API Demo</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon> 
+    
+    <!--  main css of this sample -->  
+    <link rel="stylesheet" href="/css/main.css" />
+
+    <!-- jquery packages --> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- bootstrap packages -->  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" /> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+    <script src="js/libraries/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-directional-buttons.min.css">
+
+    <!-- jstree packages -->   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.6/jstree.min.js"></script>
+  
+
+    <!-- Autodesk Forge Viewer files -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com//modelderivative/v2/viewers/style.min.css?v=v6.0" type="text/css" />
+    <script src="https://developer.api.autodesk.com//modelderivative/v2/viewers/viewer3D.min.js?v=v6.0"></script>
+
+     <!-- main view of the demo-->   
+     <script src="/js/forge.bim.issues.main.js"></script> 
+    <!-- BIM360 package: login and authentication -->
+    <script src="/js/oauth.js"></script>
+    <!-- BIM360 Issues basic demo --> 
+    <script src="/js/forge.bim.issues.basic.js"></script> 
+    <!-- BIM Issue statistic dashboard-->  
+    <script src="/js/forge.bim.issues.report.js"></script>
+    <!-- export DWG to PDF (create issue with failure job) -->   
+    <script src="/js/forge.bim.issues.integration.js"></script> 
+     <!-- BIM360 Issues export customized CSV -->   
+    <script src="/js/forge.bim.issues.export.js"></script>  
+    <!-- Forge Viewer to load model -->    
+    <script src="/js/forge.viewer.js"></script> 
+
+    <!-- Chart.js for dashboard -->   
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.0/dist/Chart.min.js"></script>
+     <script src="https://chartjs-plugin-datalabels.netlify.com/chartjs-plugin-datalabels.js"></script>
+     <script src="https://chartjs-plugin-datalabels.netlify.com/samples/utils.js"></script>
+     <script src="/js/libraries/chartutils.js"></script> 
+
+</head>
+
+<body> 
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav left">
+                <li>
+                    <a href="http://developer.autodesk.com" target="_blank">
+                      <img src="/img/bim360.png" height="30"/> 
+                       <img alt="Autodesk Forge" src="/img/autodesk-forge.png" height="30" />         BIM 360 Issue API Demo
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" id="Help" onclick="$('#about').modal('show');"><span class="glyphicon glyphicon-info-sign"></span>
+          <span id="infoText" title="About this Autodesk App">About</span></a>
+                </li>
+                <li>
+                    <a href="#" id="BIMconfig" onclick="$('#provisionAccountModal').modal('show');"><span class="glyphicon glyphicon-cog"></span>
+          <span id="helpButtonText" title="Info on setting up BIM credentials">Config</span></a>
+                </li>
+                <li>
+                    <a href="https://github.com/xiaodongliang/bim360-node.js-issues.api" id="github">
+                        <span id="githubText" title="jump to github">GitHub</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="signInButton"><span class="glyphicon glyphicon-user" id="signInProfileImage"></span>
+          <span id="signInButtonText" title="Sign in with your Autodesk Account">Sign in</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+    <!-- End of navbar -->
+
+    <div class="container-fluid">
+        <div class="row">
+                 <div class="col-md-3 ml-1" id="issue_main"  > 
+
+                <div  id="projectview" style="padding: 10px;">
+                    <div>
+                        <Button class="btn btn-lg btn-default button-ipad" onclick="forgeSignIn()">
+                            <img src="img/autodesk_text.png" height="30px" />Sign in
+                        </Button>
+                    </div>  
+                </div> 
+                </div>
+             <!-- End of left panel --> 
+
+            <ul class="nav nav-tabs col-md-9"  >
+                <li class="active"><a data-toggle="tab" href="#basic">Basic</a>
+                </li>
+                <li><a data-toggle="tab" href="#export">Export</a>
+                </li>
+                <li ><a data-toggle="tab" href="#dashboard">Dashboard</a>
+                </li> 
+                <li><a data-toggle="tab" href="#integration">Integration</a>
+                </li>
+            </ul>
+            <!-- End of tabs definition --> 
+
+
+            <div class="tab-content"  >
+                <div id="dashboard" class="tab-pane fade in">
+                    <div  id="statsView">
+
+                        <div class="row ">
+                            <div class="col-md-2 col-md-offset-5">
+                               <h4 >Issue Status</h4>  
+                            </div>  
+                        </div> 
+
+                        <div class="row">
+                            <div class="col-md-2 col-md-offset-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon beautiful">
+                                        <input type="radio" name= "reportissuetype" id="radioFieldIssue_report" checked>
+                                    </span>
+                                    <span > 
+                                        <label type="text" class="form-control">Field Issue</label>
+                                    </span > 
+                                </div>
+                            </div>
+                            <span></span> 
+                            <div class="col-md-1">
+                                 <img src="/img/refresh.png" id="btnRefresh" height="40px"/> 
+                            </div>
+                            <div class="col-md-2" style="width:220px">
+                                <div class="input-group">
+                                    <span class="input-group-addon beautiful">
+                                        <input type="radio" name= "reportissuetype" id="radioDocIssue_report">
+                                    </span>
+                                    <label type="text" class="form-control">Document Issue</label>
+                                </div> 
+                            </div>
+                         </div> 
+                     
+                        <div class="row ">
+                            <div class="col-md-5 withBoard" >   
+                                     <canvas id="issueOverview"></canvas>  
+                            </div>
+                            <div class="col-md-6  withBoard"> 
+                                    <canvas id="issueByCompany"></canvas>   
+                            </div>  
+                        </div>
+
+                        <div class="row custom">
+                            <div class=" col-md-5 withBoard">
+                                    <canvas id="issueModelvsProj"></canvas>  
+                            </div>
+                           
+                            <div class="col-md-6 withBoard">
+                                    <div style="height:280px;">
+                                            <canvas id="issueWeekDue"></canvas>  
+                                    </div>
+                                    <div class="input-group datetimepicker" id="input-start-date">
+                                        <span class="input-group-addon">Week of</span>
+                                        <input class="set-due-date form-control" data-provide="datepicker" id="oneWeekDueIssueDate" />
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> 
+                                    </div>  
+                            </div>
+                        </div>
+ 
+                    </div>
+                </div>
+                 <!-- End of dashboard tab --> 
+
+                <div id="export"  class="tab-pane fade in">  
+                        <div class="container-fluid">
+
+                             <div class="row" > 
+ 
+                                <div style="text-align: center" >
+                                    <h3 style="display: inline-block">Issue Exporter</h3>  
+                                </div>
+                                <div class="spacer50"></div>
+                                <div class="col-md-2">
+                                        <div class="input-group">
+                                            <span class="input-group-addon beautiful">
+                                                <input type="radio" name="options_exporttype" id="radioCSV_export"  checked>
+                                            </span>
+                                            <label type="text" class="form-control">CSV</label>
+                                        </div>
+                                        <span> </span>
+                                        <div class="input-group">
+                                            <span class="input-group-addon beautiful">
+                                                <input type="radio" name="options_exporttype" id="radioExcel_export" disabled >
+                                            </span>
+                                            <label type="text" class="form-control">Excel</label>
+                                        </div> 
+                                </div>
+                                <div class="col-md-2 ">
+                                        <div class="input-group">
+                                                <span class="input-group-addon beautiful">
+                                                    <input type="radio" name="options_issuetype" id="radioFieldIssue_export" checked>
+                                                </span>
+                                                <label type="text" class="form-control">Field Issues</label>
+                                            </div>
+                                            <span> </span>
+                                            <div class="input-group">
+                                                <span class="input-group-addon beautiful">
+                                                    <input type="radio" name="options_issuetype" id="radioDocIssue_export">
+                                                </span>
+                                                <label type="text" class="form-control">Document Issues</label>
+                                            </div> 
+                                   </div>
+                                   <div class="col-md-2 "  >
+                                        <div class="[ form-group ]">
+                                                <input type="checkbox" name="fancy-checkbox-default" id="withComments" autocomplete="off" checked />
+                                                <div class="[ btn-group ]">
+                                                    <label for="withComments" class="[ btn btn-default ]">
+                                                        <span class="[ glyphicon glyphicon-ok ]"></span>
+                                                        <span> </span>
+                                                    </label>
+                                                    <label for="withComments" class="[ btn btn-default active ]">
+                                                        With Comments
+                                                    </label>
+                                                </div>
+                                        </div>
+                                        <div class="[ form-group ]">
+                                            <input type="checkbox" name="fancy-checkbox-default" id="withCustomFields" autocomplete="off" />
+                                            <div class="[ btn-group ]">
+                                                <label for="withCustomFields" class="[ btn btn-default ]">
+                                                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                                                    <span> </span>
+                                                </label>
+                                                <label for="withCustomFields" class="[ btn btn-default active ]">
+                                                    With Custom Fields
+                                                </label>
+                                            </div>
+                                        </div>
+                                       
+                                </div>
+                                <div class="col-md-2"> 
+                                    <button type="button" class="btn btn-lg bigButton30  btn-primary" id="btnExportCSV">Export</button>
+                                 </div>  
+                            </div>  
+                        </div>           
+                  </div> 
+                 <!-- End of export CSV tab --> 
+
+                <div id="integration" class="tab-pane fade in ">   
+
+                            <div class="row">
+                                <div style="text-align: center">
+                                    <h3 style="display: inline-block">DWG to PDF Exporter</h3> 
+                                </div> 
+
+                                <div class="spacer50"></div> 
+
+                                <div class="row ">
+                                        <div class="col-md-3">
+                                             <h4>Select Source Folder <span id="refreshSourceFolder" class="glyphicon glyphicon-refresh" style="cursor: pointer;" title="Refresh Source Folder"></span></h4> 
+                                            
+                                             <div id= "sourceFoldersTree" style="border:1px solid silver;height: 400px;overflow: auto"></div> 
+                                        
+                                        </div>
+                                        <div class="col-md-2 "> 
+                                                <div class="spacer50"></div>
+                                                <div class="spacer50"></div> 
+                                                <button type="button" class="btn btn-primary btn-lg btn-arrow-right" id="btnBatchJob">Batch Export</button>
+ 
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h4>Select Target Folder  <span id="refreshTargetFolder" class="glyphicon glyphicon-refresh" style="cursor: pointer;" title="Refresh Target Folder"></span></h4> 
+                                            <div id= "targetFoldersTree" style="border:1px solid silver;height: 400px;overflow: auto"></div> 
+                                        </div>
+                                        <div class="spacer50"></div> 
+                                        <div class="spacer50"></div> 
+                                        
+                                        <div class="col-md-8">
+                                                <div class="progress">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;color:black;font-size: 15px;">
+                                                        
+                                                        </div>
+                                                </div> 
+                                            </div>  
+                                   </div> 
+                            </div> 
+                            
+                </div> 
+                <!-- End of integration tab:export DWG to PDF (create issue with failure job) --> 
+
+                <div id="basic" class="tab-pane fade in active">
+
+                    <div class="col-sm-4" id="issueview">
+
+                        <div class="input-group datetimepicker" id="input-start-date">
+                            <span class="input-group-addon">Document Issues Due At</span>
+                            <input class="set-due-date form-control" data-provide="datepicker" id="issuedate" />
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+
+                        </div>
+                        <div class="row " id="issuetree">
+                        </div>
+
+                        <div>
+                            <!-- create new issue -->
+                            <div class="row">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                     <button type="button" class="btn btn-default" id="btnCreateIssue">Create Issue</button>
+                                    </span>
+                                    <input type="text" class="form-control" placeholder="issue title" id="newIssueTitle">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-font"></i></span> 
+                                    <input type="text" class="form-control" data-provide="datepicker" placeholder="due date" id="newIssueDueDate">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+
+                                </div>
+                            </div>
+                            <!-- create new issue -->
+
+                            <!-- create new comment -->
+                            <div class="row">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                     <button type="button" class="btn btn-default" id="btnAddIssueComment">Create Comments</button>
+                                     </span>
+                                    <input type="text" class="form-control" placeholder="comment body" id="newCommentBody">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-align-left"></i></span> 
+
+                                </div>
+                            </div>
+                            <!-- create new comment -->
+
+                            <!-- attach image -->
+                            <div class="row">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" id="btnAddIssueAttachment">Attach Image</button>
+                                    </span>
+                                    
+                                    <input type="text" class="form-control" id="photoname" placeholder="Select a Picture Firstly" readonly>
+                                    <label class="input-group-btn">
+                                        <span class="btn btn-primary">
+                                            Choose File <input type="file" id="selectlocalphoto"  style="display: none;" accept="image/*" capture="camera">
+                                        </span>
+                                    </label>
+                                 </div>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="col-sm-5" style="height: calc(100vh - 55px);"> 
+                        <div class="row">
+                            <div id="forgeViewer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- End of basic view -->
+            </div>
+             <!-- End of basic view -->
+        </div>
+    </div>
+
+    <!-- hidden DOM -->
+    <label hidden="hidden" id="labelProjectHref"></label>
+    <label hidden="hidden" id="labelIssueHref"></label>
+    <label hidden="hidden" id="labelPushpinParam"></label>
+    <div id="loader_stats" style="display: none;"></div> 
+
+    <!-- end hidden DOM -->
+
+    <!-- Modal Provision BIM360  -->
+    <div class="modal fade" id="provisionAccountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Thanks for using BIM Issue Demo App!</h4>
+                </div>
+                <div class="modal-body">
+                    <p>To work with your BIM 360 Issues files and issues on this app please authorize my Forge Client ID with your BIM 360 Docs Account.</p>
+                    <p>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#provisionAccountStepsModal">Show me the steps <span class="glyphicon glyphicon-new-window"></span>
+                        </button>
+                    </p>
+                    Use this as Forge Client ID:
+                    <div class="input-group">
+                        <input type="text" readonly="true" aria-describedby="CopyClientID" id="ClientID" class="form-control" value="" />
+                        <span class="input-group-addon" style="cursor: pointer" data-clipboard-target="#ClientID" id="CopyClientID">Copy to clipboard</span>
+                    </div>
+                    And this App Name:
+                    <div class="input-group">
+                        <input type="text" readonly="true" aria-describedby="CopyAppName" id="AppName" class="form-control" value="BIM Issue Demo" />
+                        <span class="input-group-addon" style="cursor: pointer" data-clipboard-target="#AppName" id="CopyAppName">Copy to clipboard</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="provisionAccountSave">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Provision BIM360 Help  -->
+    <div class="modal fade" id="provisionAccountStepsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel1">Step-by-step guide</h4>
+                </div>
+                <div class="modal-body">
+                    <p>To access your BIM 360 Docs files with this app, you need to connect your BIM 360 account with the app.</p>
+                    <ol>
+                        <li>Log in to <a href="https://bim360enterprise.autodesk.com/" target="_blank">BIM 360 Account Administration</a>. Note that you need account administrator permissions.</li>
+                        <li>To request permission access for the integration follow this blog post <a href="https://fieldofviewblog.wordpress.com/2017/08/18/no-apps-integrations-tab/" target="_blank"> Request Apps and Integrations</a>
+                        </li>
+                        <li>If you have more than one account, select the account you want to integrate with the app.</li>
+                        <li>From the toolbar, select <strong>SETTINGS &gt; Apps &amp; Integrations</strong>.
+                            <br/>
+                            <img src="/img/Step1.png" width="500" />
+                        </li>
+                        <li>Click the <strong>Add Integration</strong> button.
+                            <br />
+                            <img src="/img/Step2.png" />
+                        </li>
+                        <li>Select <strong>BIM 360 Account Administration</strong> and <strong>BIM 360 Docs</strong>, and click <strong>Next</strong>.</li>
+                        <li>Select <strong>I’m the developer</strong>, and click <strong>Next</strong>.</li>
+                        <li>In the <strong>Forge Client ID</strong> and <strong>App Name</strong> fields, enter the Forge client ID and app name provided by the app retailer.</li>
+                        <li>Select the <strong>I have saved the Account ID information securely</strong> checkbox.</li>
+                        <li>Click <strong>Save</strong>.</br>
+                            <img src="/img/Step3.png" width="500" />
+                        </li>
+                        <p></p>
+                        <p>Congratulations! You can now access your BIM 360 Docs files.</p>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Understood, thanks!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Clipboard('.input-group-addon');
+    </script>
+
+    <!-- About  -->
+    <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">About, Contact and Instructions</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>About</h4>
+                    <p>Developed by <a href="http://developer.autodesk.com">Forge Partner Development</a> team at Autodesk, Inc.</p>
+                    <p>Get the <a href="https://github.com/xiaodongliang/bim360-node.js-issues.api" target="_blank">source code</a>.</p>
+                    <h4>Contact us</h4>
+                    <p>Question? Suggestions? <a href="mailto:bim360apps@autodesk.com">Contact us</a> directly or see our <a href="https://github.com/xiaodongliang/BIM360-API-Demo-Node.js/issues" target="_blank">open issues</a>.</p>
+                    <h4>Instructions</h4>
+                    <ol>
+                        <li>You need an account on
+                            <img src="img/autodesk_text.png" height="15">
+                        </li>
+                        <li>Click the <strong>Sign in</strong> button to login</li>
+                        <li>A folder tree will appear on the left. Click the item to expand</li>
+                        <li>Click one BIM project, set the due date, all document issues at the due date will be listed
+                            <li>Click the issue to expand its attributes, comments collection and attachments collection</li>
+                            <li>Expand any comment, some comments details will be listed</li>
+                            <li>Click any attachment, the corresponding attachment file will be downloaded to local</li>
+                            <li>If attributes of the issue contains [pushpin], click the pushpin, the corresponding model will be loaded</li>
+                            and the corresponding pushpin markup will be shown up (currently, the demo implementes pushpin in 3D model only
+
+                            <li>Input issue title, issue due time on the bottom toolbar. Click [Create Issue], one new document issue will be created</li>
+                            and the Issue tree will be refreshed.
+                            <li>Select one issue, input comment body on the bottom toolbar, click [Create Comments], one new comment will be added to this selected issue</li>
+                            and the Issue tree will be refreshed.
+                            <li>Select one issue, choose a local picture, click [Attach Image], one new attachment will be added to this selected issue</li>
+                            and the Issue tree will be refreshed.
+
+                            <li>Select one BIM 360 project, click [Export CSV], all document issues of this project will be exported to a CSV file.</li>
+                            <ul>
+                    </ol>
+                    <center>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/4g9FFFlQMjU" frameborder="0" allowfullscreen=""></iframe>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
