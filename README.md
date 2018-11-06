@@ -17,9 +17,8 @@ This repository demonstrates BIM 360 Field Issues API by a couple of scenarios: 
 ```diff
 -As of this writing, you see two separate set of APIs for Document and Field Issues. 
 -They are v1. Soon, they are going to merge. 
--After that happens, you can use similar endpoints like Field Issues. 
--The v2 endpoints will be unified Issues. 
--In this sample, most codes are demoed with v1 Field Issues endpoints
+-After that happens, you can use similar endpoints like Field Issues: And they will be unified Issues. 
+-In this sample, most codes are demoed with Field Issues endpoints
 ```
 
 ## Description
