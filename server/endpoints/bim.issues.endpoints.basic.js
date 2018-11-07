@@ -113,7 +113,7 @@ router.get('/issuebasic/getTreeNode', function (req, res) {
         })  
         break;
       case 'pushpin':
-        getOnePushpin(req.query.data, res);
+        getOnePushpin(req.query.data.attributes.pushpin_attributes, res);
         break;
     }
   }
