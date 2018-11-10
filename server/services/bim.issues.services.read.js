@@ -100,6 +100,32 @@ function getIssues(input) {
   }); 
 }
 
+//get issues of one page
+function getIssuesOnePage(input) { 
+  
+  return new Promise(function (resolve, reject) {
+    
+    var urlFilter = input.pageoffset !=null ? '?page[offset]=' + input.pageoffset:'';
+    if(urlFilter.length) 
+        urlFilter+= '&page[limit]=5'; 
+
+    request.get({
+        url: config.fieldissuev1.getIssues(input.containerId,urlFilter), 
+        headers: config.fieldissuev1.httpHeaders(input.credentials.access_token),
+      },
+      function (error, response, body) {
+
+        if (error) {
+           reject({ error: error });
+        } else {
+          
+            var issues = JSON.parse(body).data; 
+          resolve({issues:issues}) ;
+        }
+      });
+  }); 
+}
+
 //get comments of specific issue
 function getIssueComments(input) {
 
@@ -294,6 +320,38 @@ return new Promise(function (resolve, reject) {
   });
 }
   
+function getOneIssueComments(input){
+ 
+  return new Promise((resolve,reject)=>{
+
+    var headers = {
+      Authorization: 'Bearer '+ input.credentials.access_token,
+      'Content-Type': 'application/vnd.api+json' 
+    }
+  
+    var requestUrl = input.isDocIssue?
+    'https://developer.api.autodesk.com/issues/v1/containers/' 
+    + input.containerId + '/issues/'+input.issueId +'/comments'
+    :
+    'https://developer.api.autodesk.com/issues/v1/containers/' 
+    + input.containerId + '/quality-issues/'+input.issueId +'/comments'
+
+    request.get({
+      url: requestUrl,
+      headers: headers 
+     },
+    function (error, response, body) {
+  
+      if (error) {
+        console.log(error);
+        reject({error:error});
+       }else{  
+        var commentsArray = JSON.parse(body).data;  
+        resolve(commentsArray); 
+      }   
+    });  
+  });
+}
 
 module.exports = { 
   getFieldIssueTypes:getFieldIssueTypes,
@@ -301,7 +359,9 @@ module.exports = {
   getIssues:getIssues,
   getIssueComments:getIssueComments,
   getIssueAttachments:getIssueAttachments,
-  getAttributes:getAttributes
+  getAttributes:getAttributes,
+  getOneIssueComments:getOneIssueComments,
+  getIssuesOnePage:getIssuesOnePage
  }
 
 

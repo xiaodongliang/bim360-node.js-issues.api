@@ -25,22 +25,79 @@
       getBIMHubs(); 
    }
 
-    $.getJSON("/api/forge/clientID", function (res) {
-        $("#ClientID").val(res.ForgeClientId);
-    });
-
-    $("#provisionAccountSave").click(function () {
-        $('#provisionAccountModal').modal('toggle');
-     });
+   
      $("#refreshHubs").click(function () {
       getBIMHubs(); 
-    });
+    }); 
 
-    $('#dashboard').click( function (e) {
-     
-    });
+    
 
+    $('#aboutHelp').click(function(evt){
+      if(document.getElementsByName('aboutHelpDialog').length>0)
+           $('#aboutHelpDialog').modal('show');
+      else
+        createHelpAndShow('aboutHelp');
+     });
+
+    $('#configHelp').click(function(evt){
+      if(document.getElementsByName('configHelpDialog').length>0)
+           $('#configHelpDialog').modal('show');
+      else
+        createHelpAndShow('configHelp');
+     });
+
+     $('#basicHelp').click(function(evt){
+      if(document.getElementsByName('basicHelpDialog').length>0)
+           $('#basicHelpDialog').modal('show');
+      else
+        createHelpAndShow('basicHelp');
+     });
+
+     $('#exportHelp').click(function(evt){
+      if(document.getElementsByName('exportHelpDialog').length>0)
+           $('#exportHelpDialog').modal('show');
+      else
+        createHelpAndShow('exportHelp');
+     });
+
+     $('#dashboardHelp').click(function(evt){
+      if(document.getElementsByName('dashboardHelpDialog').length>0)
+           $('#dashboardHelpDialog').modal('show');
+      else
+        createHelpAndShow('dashboardHelp');
+     });
+
+     $('#integrationHelp').click(function(evt){
+      if(document.getElementsByName('integrationHelpDialog')>0)
+           $('#integrationHelpDialog').modal('show');
+      else
+        createHelpAndShow('integrationHelp');
+     }); 
 });
+
+function createHelpAndShow(helpName){
+
+  $.ajax({
+    url: 'helpDiv/'+helpName+'.html',
+    success: function(data) {
+        var tempDiv = document.createElement('div'); 
+        tempDiv.innerHTML = data;
+        document.body.appendChild(tempDiv);
+
+        if(helpName == 'configHelp'){
+          $.getJSON("/api/forge/clientID", function (res) {
+            $("#ClientID").val(res.ForgeClientId);
+            $('#'+helpName+'Dialog').modal('show');  
+          }); 
+          $("#provisionAccountSave").click(function () {
+            $('#configHelpDialog').modal('toggle');
+          });
+        }else
+          $('#'+helpName+'Dialog').modal('show'); 
+
+    }
+  } );
+}
 
 var haveBIM360Hub = false;
 

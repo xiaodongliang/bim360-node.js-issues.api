@@ -84,31 +84,36 @@ module.exports = {
   },
   findUserName:function(hubId,userID){
      
-    if(hubId in bimDatabase){
-       var hubUsers = bimDatabase[hubId].users;
-       var founduser = hubUsers.filter(function(item){ return item.uid === userID; })
-       if(founduser && founduser.length && founduser.length > 0)
-        return founduser[0].name;
-      else
-       return '<not set>' 
-    }else{
-      return '<not set>'
-    } 
+    var hubUsers = bimDatabase.getHubUsers(hubId);
+    if(hubUsers==null)
+       return '<not set>';
+
+     var founduser = hubUsers.filter(function(item){ return item.uid === userID; })
+    if(founduser && founduser.length && founduser.length > 0)
+    return founduser[0].name;
+    else
+    return '<not set>'  
   },
   findUserCompany:function(hubId,assigned_to,assigned_to_type){
   
-      var hubUsers = bimDatabase.getHubUsers(hubId);
-      var founduser = hubUsers.filter(function(item){
-         return item.uid === assigned_to; 
-        })
-      if(founduser && founduser.length && founduser.length > 0)
-       return founduser[0].company_name;
-     else{
-       if(assigned_to_type == 'role' || assigned_to_type == 'company')
-          return 'role/company'  
+    if(assigned_to_type == 'role' || assigned_to_type == 'company')
+      return '<role/company>'  
+
+    var hubUsers = bimDatabase.getHubUsers(hubId);
+    if(hubUsers==null)
+        return '<not set>';
+
+    var founduser = hubUsers.filter(function(item){return item.uid === assigned_to;})
+    if(founduser && founduser.length && founduser.length > 0){
+          if(founduser[0].company_name!='')
+             return founduser[0].company_name;
+          else if(founduser[0].company.name!='')
+             return founduser[0].name;
+          else
+              return '<not set>'  
+      } 
        else
-          return '<not set>'  
-     }
+          return '<not set>'   
  
   },
   findIssueType:function(containerId,typeKey) {

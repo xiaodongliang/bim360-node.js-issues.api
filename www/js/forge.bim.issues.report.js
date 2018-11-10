@@ -404,6 +404,8 @@ $(document).ready(function () {
       alert('please select one project!');
       return;
     }
+    destoryAllViews(); 
+
       var projectHref = $('#labelProjectHref').text();  
      if(issueByWeekDueBar){
        //update with existing data only
@@ -441,6 +443,11 @@ $(document).ready(function () {
     var projectHref = $('#labelProjectHref').text(); 
     refreshDashboard(projectHref,true); 
   }); 
+
+  
+   
+
+
 
 });
  

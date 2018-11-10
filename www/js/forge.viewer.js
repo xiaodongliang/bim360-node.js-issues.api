@@ -123,6 +123,9 @@ function onGeometryLoaded(evt){
 
       });
 
+
+      pushPinExtension.selectOne(issueData.id);
+
     });
 
 }

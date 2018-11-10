@@ -21,14 +21,26 @@
 module.exports = {
 
   // this this callback URL when creating your client ID and secret
-  //set enviroment variables or hard-code here
-  callbackURL: process.env.FORGE_CALLBACK_URL || 'http://localhost:3000/api/forge/callback/oauth',
+  //set enviroment variables or hard-code here 
+
+   callbackURL: process.env.FORGE_CALLBACK_URL || 'http://localhost:3000/api/forge/callback/oauth',
 
   // set enviroment variables or hard-code here
+  //apply your Forge client credential
+  //check Forge help at https://forge.autodesk.com/developer/getting-started
   credentials: {
     client_id: process.env.FORGE_CLIENT_ID || '<your Forge client id>',
-    client_secret: process.env.FORGE_CLIENT_SECRET || '<your Forge client secret>',
+    client_secret: process.env.FORGE_CLIENT_SECRET || '<your Forge client secret>'
   },
+
+  //input your website url such as 
+  //http://mywebsite.com/webhook/itemAdded
+  webhookCallBackURL: process.env.FORGE_WEBHOOK_URL || '<your web host url>/webhook/itemAdded',
+
+  //input your own link for posting message to your own Slack channel
+  //check the Slack help:
+  //https://api.slack.com/tutorials/slack-apps-hello-world
+  slackPostMessageURL:process.env.SLACK_POST_MESSAGE_URL || '<your link of Slack post message>',
 
   scope: {
     // scope for user 3-legged token
@@ -47,13 +59,14 @@ module.exports = {
   //some endpoints have not been packaged with Forge SDK
   //most endpoints of Issue API use the same kind of header
   
+  ForgeAPIBaseUrl: 'https://developer.api.autodesk.com/',
     hqv1: {
-      userprofile_useratme: 'https://developer.api.autodesk.com/userprofile/v1/users/@me'
+      userprofile_useratme: this.ForgeAPIBaseUrl+'userprofile/v1/users/@me'
     },
     //Issue API v1
     fieldissuev1: {
 
-      basedUrl: 'https://developer.api.autodesk.com/issues/v1/containers/',
+      basedUrl: this.ForgeAPIBaseUrl+'issues/v1/containers/',
       httpHeaders: function (access_token) {
         return {
           Authorization: 'Bearer ' + access_token,
@@ -93,9 +106,43 @@ module.exports = {
 
     //Design Automation V2
     dav2:{
+      
       createWorkItem:function(){
-        return 'https://developer.api.autodesk.com/autocad.io/us-east/v2/WorkItems'
+        return this.ForgeAPIBaseUrl+'autocad.io/us-east/v2/WorkItems'
       }
-    } 
+    },
+    webhook:{
+      httpHeaders: function (access_token) {
+        return {
+          Authorization: 'Bearer ' + access_token,
+          'Content-Type': 'application/json'
+        }
+      },
+      getWebhook:function(system,event){
+        return this.ForgeAPIBaseUrl+'webhooks/v1/systems/'+
+        system +
+        '/events/'+
+        event+
+        '/hooks'; 
+      },
+      createWebhook:function(system,event){
+        return this.ForgeAPIBaseUrl+'webhooks/v1/systems/'+
+        system +
+        '/events/'+
+        event+
+        '/hooks'; 
+      },
+      patchWebhook:function(system,event,hookId){
+        return this.ForgeAPIBaseUrl+'webhooks/v1/systems/'+
+        system +
+        '/events/'+
+        event+
+        '/hooks/'+
+        hookId; 
+      },
+      deleteWebHook:function(){
 
+      }
+    },
+   
 };

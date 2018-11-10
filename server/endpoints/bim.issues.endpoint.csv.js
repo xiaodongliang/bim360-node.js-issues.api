@@ -18,6 +18,7 @@ var UserSession = require('../services/userSession');
 var utility = require('../utility');
 var issueDumpAll = require('../services/bim.issues.services.dump');
 var bimDatabase = require('../bim.database');
+var bimIssuesServicesRead = require('../services/bim.issues.services.read'); 
 
 
 router.get('/issuecsv/downloadCSV', function (req, res) {
@@ -67,84 +68,61 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
         var isCSV = JSON.parse(req.query.isCSV);  
         var withComments  = JSON.parse(req.query.withComments);  
         var withCustomFields = JSON.parse(req.query.withCustomFields); 
-    
-        var projectName = bimDatabase.getProjectInfo(projectId).projectName;
-        var prefix = isDocIssue?'-Document':'-Field'
-        var date = new Date(); 
-        var jobId = projectName
-                    + prefix
-                    +'- Issues - ' 
-                    + date.getFullYear()
-                    + '.' + (date.getMonth() + 1)
-                    + '.' + date.getDate()
-                    + '.' + date.getHours()
-                    + '.' + date.getMinutes() 
-                    + '.' + date.getSeconds()
-                        ;
-    
-        utility.storeStatus(jobId,'working'); 
-        //we can tell client the job started.
-        res.status(200).json({jobId:jobId});  
-    
-        var input = {
-            hubId:hubId,
-            isDocIssue:isDocIssue,
-            isCSV:isCSV,
-            withComments:withComments,
-            withCustomFields:withCustomFields,
-            containerId:containerId,  
-            credentials:userSession.getUserServerCredentials(),  
-            jobId:jobId 
-        };    
+        var isOnePage = JSON.parse(req.query.isOnePage);  
 
-        var allIssues = [];
-        issueDumpAll.refreshIssue(input,allIssues,0)
-        .then(result=>{
-            input.allIssues = result;
-            return writeToCSV(input);
-        }).then(result=>{
-            utility.storeStatus(result.jobId,'done'); 
-        }).catch(ex=>{ 
-            utility.storeStatus(ex.jobId,'error');
-        });  
+        if(isOnePage){
+            var pageoffset = JSON.parse(req.query.pageoffset);  
+            var input = {
+                hubId:hubId,
+                isDocIssue:isDocIssue,
+                isCSV:isCSV,
+                withComments:withComments,
+                withCustomFields:withCustomFields,
+                containerId:containerId,  
+                pageoffset:pageoffset,
+                credentials:userSession.getUserServerCredentials(),  
+             };
+            
+            getOnePage(input,res);
+
+        }else{
+            var projectName = bimDatabase.getProjectInfo(projectId).projectName;
+            var prefix = isDocIssue?'-Document':'-Field'
+            var date = new Date(); 
+            var jobId = projectName
+                        + prefix
+                        +'- Issues - ' 
+                        + date.getFullYear()
+                        + '.' + (date.getMonth() + 1)
+                        + '.' + date.getDate()
+                        + '.' + date.getHours()
+                        + '.' + date.getMinutes() 
+                        + '.' + date.getSeconds()
+                            ;
+        
+            utility.storeStatus(jobId,'working'); 
+            //we can tell client the job started.
+            res.status(200).json({jobId:jobId});  
+        
+            var input = {
+                hubId:hubId,
+                isDocIssue:isDocIssue,
+                withComments:withComments,
+                withCustomFields:withCustomFields,
+                containerId:containerId,  
+                credentials:userSession.getUserServerCredentials(), 
+                jobId:jobId 
+             };    
+
+            writeToCSV(input);
+
+        } 
+       
     }
     catch(ex){
         res.status(500).end(); 
     }
-}); 
-
-  function getOneIssueComments(input){
- 
-    return new Promise((resolve,reject)=>{
-  
-      var headers = {
-        Authorization: 'Bearer '+ input.credentials.access_token,
-        'Content-Type': 'application/vnd.api+json' 
-      }
-    
-      var requestUrl = input.isDocIssue?
-      'https://developer.api.autodesk.com/issues/v1/containers/' 
-      + input.containerId + '/issues/'+input.issueId +'/comments'
-      :
-      'https://developer.api.autodesk.com/issues/v1/containers/' 
-      + input.containerId + '/quality-issues/'+input.issueId +'/comments'
-
-      request.get({
-        url: requestUrl,
-        headers: headers 
-       },
-      function (error, response, body) {
-    
-        if (error) {
-          console.log(error);
-          reject({error:error});
-         }else{  
-          var commentsArray = JSON.parse(body).data;  
-          resolve(commentsArray); 
-        }   
-      });  
-    });
-  }
+});  
 
   function buildCSVHeader(input){ 
       var header = [
@@ -178,13 +156,10 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
         }
       }
 
-      input.csvHeader= header;
+      return header;
   }
 
-  function makeRecord(input,eachIssue,comments){
-    var assignee_to = utility.checkAssignTo(input.hubId,
-        eachIssue.attributes.assigned_to_type,
-         eachIssue.attributes.assigned_to);
+  function makeRecord(input,eachIssue,comments){ 
 
     var thisRecord = {
         id:eachIssue.attributes.identifier,
@@ -192,14 +167,19 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
         description:eachIssue.attributes.description, 
         location:eachIssue.attributes.location_description,
         status:eachIssue.attributes.status, 
-        assigned_to:assignee_to, 
+        assigned_to: utility.checkAssignTo(input.hubId,
+                         eachIssue.attributes.assigned_to_type,
+                         eachIssue.attributes.assigned_to), 
         assignee_type:eachIssue.attributes.assigned_to_type,
-        company:eachIssue.attributes.assigned_to_type=='user'?
-                utility.findUserCompany(input.hubId,eachIssue.attributes.assigned_to):'',
+        company: utility.findUserCompany(input.hubId,
+                    eachIssue.attributes.assigned_to,
+                    eachIssue.attributes.assigned_to_type),
         due_date:eachIssue.attributes.due_date, 
         pushpin:eachIssue.attributes.pushpin_attributes==null?'null':'Yes',
         created_at:eachIssue.attributes.created_at, 
-        created_by:utility.findUserName(input.hubId,eachIssue.attributes.created_by),
+        created_by:utility.checkAssignTo(input.hubId,
+                                        'user',
+                                        eachIssue.attributes.created_by),
         updated_at:eachIssue.attributes.updated_at, 
         attachment:eachIssue.attributes.attachment_count 
     }
@@ -219,19 +199,52 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
     }
     return thisRecord;
   }
-   
-  function writeToCSV(input){ 
-  
-    return new Promise((resolve,reject)=>{  
 
-        buildCSVHeader(input);
+  function getOnePage(input,res){ 
+
+   bimIssuesServicesRead.getIssuesOnePage(input)
+    .then(result=>{
+        input.allIssues = result.issues;
+        return generateRecords(input);
+    }).then(result=>{
+        res.writeHead(200, {"Content-Type": "application/json"}); 
+        res.status(200).end(JSON.stringify(result.records))
+    }).catch(ex=>{ 
+        res.status(500).end();
+    });   
+
+  }
+
+  function writeToCSV(input){
+    
+
+    var allIssues = [];
+    issueDumpAll.refreshIssue(input,allIssues,0)
+    .then(result=>{ 
+        input.allIssues = result;
+        var csvHeader = buildCSVHeader(input);  
+        input.csvHeader = csvHeader;
+        return generateRecords(input);
+    }).then(result=>{
+        utility.storeStatus(input.jobId,'done'); 
+
         var file_full_csv_name = path.join(__dirname, 
             '/../downloads/' + input.jobId + '.csv'); 
         const csvWriter = createCsvWriter({
-        path: file_full_csv_name,
-        header: input.csvHeader
+            path: file_full_csv_name,
+            header: input.csvHeader
         });
-        
+        csvWriter.writeRecords(result.records)   
+    }).catch(ex=>{ 
+        utility.storeStatus(ex.jobId,'error');
+    });    
+
+  }
+
+  function generateRecords(input){ 
+  
+    return new Promise((resolve,reject)=>{  
+
         var loopIndex = 0;
         var tasks = [];
         var csvRecord = [];
@@ -247,7 +260,7 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
                             isDocIssue:input.isDocIssue
                             };
     
-            getOneIssueComments(eachInput)
+            bimIssuesServicesRead.getOneIssueComments(eachInput)
                 .then(function(result) {
                 //make a CSV record 
                 var comments = '';
@@ -256,10 +269,10 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
                                     result[index].attributes.body + '\n';
                     
                 csvRecord.push(makeRecord(input,eachIssue,comments));   
-                resolve({reqId:input.reqId}); 
+                resolve({}); 
                 })  
                 .catch(function(result) { 
-                reject({reqId:input.reqId});
+                reject({});
                 });
         });
         tasks.push({ fun: x, param: el });
@@ -275,14 +288,11 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
             const pool = new PromisePool(promiseProducer, 30);
             const poolPromise = pool.start();
     
-            poolPromise.then(() => {
-                csvWriter.writeRecords(csvRecord)        
-                .then(() => {
-                    resolve({jobId:input.jobId})
-                }).catch(result =>{ 
-                    reject({jobId:input.jobId});
-                });
-            }); 
+            poolPromise.then(() => { 
+                    resolve({records:csvRecord})
+                }).catch(error =>{ 
+                    reject({error:error});
+                }); 
             } 
         });  
     });

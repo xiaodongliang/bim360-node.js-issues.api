@@ -16,9 +16,16 @@
           "description": "Forge Client Secret"
       },
       "FORGE_CALLBACK_URL": {
-          "description": "Callback URL of your Forge app, required for 3-legged OAuth",
-          "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/api/forge/callback/oauth"
-      }
+        "description": "Callback URL of your Forge app, required for 3-legged OAuth",
+        "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/api/forge/callback/oauth"
+     },
+      "FORGE_WEBHOOK_URL": {
+          "description": "Callback URL for Forge Webhook response",
+          "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/webhook/itemAdded"
+      },
+      "SLACK_POST_MESSAGE_URL": {
+        "description": "your own link for posting message to your own Slack channel"
+     } 
   },
   "website": "https://developer.autodesk.com/",
   "success_url": "/"

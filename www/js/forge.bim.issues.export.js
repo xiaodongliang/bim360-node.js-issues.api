@@ -27,9 +27,8 @@
   });
   $('#radioDocIssue_export').click(function () {
     $("#radioDocIssue_export").prop("checked", true); 
-    $("#radioFieldIssue_export").prop("checked", false);  
-    
-  });
+    $("#radioFieldIssue_export").prop("checked", false);   
+  }); 
 
 }); 
 
@@ -45,7 +44,8 @@ function exportCSV(projectHref){
       'isDocIssue': $('#radioDocIssue_export').is(":checked"),
       'isCSV':$('#radioCSV_export').is(":checked"),
       'withComments':$('#withComments').is(":checked"),
-      'withCustomFields':$('#withCustomFields').is(":checked") 
+      'withCustomFields':$('#withCustomFields').is(":checked"),
+      'isOnePage':false
     },
     success: function (res) {  
         $('#loader_stats').css({ display: "block" });  

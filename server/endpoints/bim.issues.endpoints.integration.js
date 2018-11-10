@@ -31,15 +31,15 @@ var fs = require('fs');
 var path = require('path');
 var url = require('url');  
     
-var utility = require('../utility');
-
+var utility = require('../utility'); 
+var config = require('../config');   
 var UserSession = require('../services/userSession');
 var oAuthServices = require('../services/oauth.services'); 
 var projectsServices = require('../services/dm.projects.services');
 var bimIssuesServicesWrite = require('../services/bim.issues.services.write'); 
-var daServices = require('../services/da.services');  
+var daServices = require('../services/da.services');
+var webhookServices = require('../services/bim.webhook.services');   
 var bimDatabase = require('../bim.database'); 
-var utility = require('../utility'); 
  
 
 //do the job of workitem
@@ -87,12 +87,17 @@ router.get('/integration/startjob', jsonParser,function (req, res) {
     .then(function(result){
       input.filesArray = result.contents;
       utility.storeStatus(jobId,JSON.stringify(
-                                      {status:'migrating',
+                                      {status:'exporting',
                                       allFiles:result.contents.length,
                                       migrated:[],
                                       failed:[],
                                       exception:[]})) 
-      startWorkflow(input);
+        console.log('getAdminTwoLeggedToken')
+
+        startWorkflow(input); 
+
+    }).then(function(result){
+      console.log('starting workflow...') 
     })  
     .catch(function (result) { 
       console.log('something failed when calculating files in source folder:');
@@ -140,6 +145,8 @@ function startWorkflow(input){
             itemId:eachInput.sourceItemId})
         .then(function(result){
 
+          console.log('getItemStorage')
+
           eachInput.sourceItemStg= result.itemStg;
 
            return projectsServices.createStorage(
@@ -151,6 +158,8 @@ function startWorkflow(input){
               });
         }).then(function(result){ 
  
+          console.log('createStorage')
+
            var params = result.newFileObjUrn.split('/');
           var resourceId = params[params.length - 1];
           eachInput.newFileObjUrn =  result.newFileObjUrn;
@@ -163,9 +172,9 @@ function startWorkflow(input){
 
         }).then(function(result){  
 
-          if(result.status == 'failed') {
+          console.log('createDAWorkItemV2')
 
-            updateSatus(eachInput.jobId,eachInput.sourceItemHref,'failed'); 
+          if(result.status == 'failed') { 
 
             //start to create issue.switch to 3 legged token
             eachInput.oAuth = input.userServeroAuth;
@@ -174,55 +183,68 @@ function startWorkflow(input){
             eachInput.cloudHref = result.logFileHref;
             eachInput.workitemId = result.workitemId;
 
-            daServices.downloadReport(eachInput.logFileName,eachInput.cloudHref)
-            .then(function(result){   
-                eachInput.newFileName = eachInput.workitemId + '.log' 
-                eachInput.folderId = eachInput.targetFolderId  
+
+            eachInput.containerId = bimDatabase.getIssueContainerId(eachInput.projectId);
+            var one_date = new Date();
+            one_date = one_date.getFullYear() 
+                     +'-' + (one_date.getMonth() +1)
+                     + '-' +(one_date.getDate()+1);
+     
+            var data = {
+            type: 'quality_issues',
+                  attributes: { 
+                      'title':eachInput.sourceFileName + ' failed to be migrated on (' + one_date + ')',
+                      'description':eachInput.sourceFileName + ' failed to be migrated. Please check the attached log file',
+                      'status':'open',
+                      'assigned_to':'7462015',
+                      'assigned_to_type':'role',
+                      'due_date':one_date, 
+                      'ng_issue_type_id': 'd73dc282-8ff3-44cb-9db9-84e92fdfe024', //hard-coded for simple demo
+                      'ng_issue_subtype_id': '202d59b1-1c2b-4270-824c-d53f3c3754bc',//hard-coded for simple demo
+                      'root_cause_id': 'aff4b70b-54aa-4e13-92b4-49caf542bef4'//hard-coded for simple demo
+                   
+              } 
+            }
+
+           eachInput.data = data;
+
+           bimIssuesServicesWrite.createIssues(eachInput).then(function(result){ 
+
+                eachInput.issue_id = result.issueId; 
+                //eachInput.newFileName = eachInput.workitemId + '.log'
+
+                eachInput.newFileName = eachInput.issue_id + '.log'  
+
+                return daServices.downloadReport(eachInput.newFileName,
+                  eachInput.cloudHref);
+
+           }).then(function(result){   
                 eachInput.file_full_path_name = __dirname + '/../downloads/' + eachInput.newFileName;
+
+                eachInput.folderId = eachInput.targetFolderId  
+                
                 return projectsServices.createOneItem(eachInput); 
 
              }).then(function(result){  
-              eachInput.newFileObjUrn = result.newFileObjUrn;
-               eachInput.containerId = bimDatabase.getIssueContainerId(eachInput.projectId);
-                var one_date = new Date();
-               one_date = one_date.getFullYear() 
-                         +'-' + (one_date.getMonth() +1)
-                         + '-' +(one_date.getDate()+1);
-         
-               var data = {
-                type: 'quality_issues',
-                      attributes: { 
-                          'title':eachInput.sourceFileName + ' failed to be migrated',
-                          'description':input.sourceFileName + ' failed to be migrated. Please check the attached log file',
-                          'status':'open',
-                          'assigned_to':'7462015',
-                          'assigned_to_type':'role',
-                          'due_date':one_date, 
-                          'ng_issue_type_id': 'd73dc282-8ff3-44cb-9db9-84e92fdfe024', //hard-coded for simple demo
-                          'ng_issue_subtype_id': '202d59b1-1c2b-4270-824c-d53f3c3754bc',//hard-coded for simple demo
-                          'root_cause_id': 'aff4b70b-54aa-4e13-92b4-49caf542bef4'//hard-coded for simple demo
-                       
-                  } 
-                }
+                
+                eachInput.newFileObjUrn = result.newFileObjUrn; 
+                eachInput.attachment_name = eachInput.newFileName;
+                eachInput.objectUrn = eachInput.newFileObjUrn;
 
-               eachInput.data = data;
-               return bimIssuesServicesWrite.createIssues(eachInput)
+                return bimIssuesServicesWrite.createIssueAttachment(eachInput);  
 
-             }).then(function(result){ 
-              eachInput.attachment_name = eachInput.newFileName;
-              eachInput.objectUrn = eachInput.newFileObjUrn;
-              eachInput.issue_id = result.issueId;
-
-              return bimIssuesServicesWrite.createIssueAttachment(eachInput); 
               }).then(function(result){
 
+                console.log('createIssueAttachment')  
                 console.log('one issue for failed workitem is created.')
+
+                updateSatus(eachInput.jobId,eachInput.sourceItemHref,'failed'); 
+
               }).catch(function (result) {  
               return;
              });   
            }
           else if(result.status == 'done'){
-            updateSatus(eachInput.jobId,eachInput.sourceItemHref,'migrated'); 
 
             //post item only because the file has been uploaded to storage
              //eachInput.oAuth = input.userServeroAuth;
@@ -231,6 +253,9 @@ function startWorkflow(input){
              eachInput.folderId = eachInput.targetFolderId 
              
              projectsServices.postItem(eachInput).then(function(result){
+              console.log('postItem')
+            updateSatus(eachInput.jobId,eachInput.sourceItemHref,'migrated'); 
+  
                return;
               }).catch(function (result) {  
                 return;

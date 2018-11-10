@@ -114,7 +114,7 @@ function prepareBIMIssuesTree(projetId) {
       var pushpin_svg = {
        object_id:nodeData.attributes.pushpin_attributes.object_id,
        location:nodeData.attributes.pushpin_attributes.location,
-       viewer_state:nodeData.attributes.pushpin_attributes.viewer_state,
+       viewerState:nodeData.attributes.pushpin_attributes.viewer_state,
        title:  nodeData.attributes.title,
        id:nodeData.id,
        type:nodeData.type,

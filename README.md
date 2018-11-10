@@ -4,11 +4,14 @@ This repository demonstrates BIM 360 Field Issues API by a couple of scenarios: 
 [![node](https://img.shields.io/badge/nodejs-6.11.1-yellow.svg)](https://nodejs.org)
 [![npm](https://img.shields.io/badge/npm-3.10.10-green.svg)](https://www.npmjs.com/)
 [![visual code](https://img.shields.io/badge/visual%20code-1.28.2-orange.svg)](https://code.visualstudio.com)
+
 [![oAuth2](https://img.shields.io/badge/oAuth2-v1-green.svg)](http://developer.autodesk.com/)
 [![Data-Management](https://img.shields.io/badge/Data%20Management-v1-green.svg)](http://developer.autodesk.com/)
 [![Viewer](https://img.shields.io/badge/Viewer-v6-green.svg)](http://developer.autodesk.com/)
+
 [![BIM-360](https://img.shields.io/badge/BIM%20360-v1-green.svg)](http://developer.autodesk.com/)
 [![Design Automation](https://img.shields.io/badge/Design%20Automation-v2-green.svg)](http://developer.autodesk.com/)
+
 [![License](http://img.shields.io/:license-mit-red.svg)](http://opensource.org/licenses/MIT)
 [![Level](https://img.shields.io/badge/Level-Intermediate-blue.svg)](http://developer.autodesk.com/)
 
@@ -26,7 +29,7 @@ This repository demonstrates BIM 360 Field Issues API by a couple of scenarios:
 1. basic usage
 2. export issues list to customized CSV with comments list or with custom fields
 3. dashboard of issues statistics
-4. export DWG to PDF (create issue for failure job)
+4. export DWG to PDF. Create issue for failure job. Send notification to specific Slack channel with the issue link
 
 ## Thumbnail
 
@@ -43,6 +46,7 @@ http://au2018-bim360-issue.herokuapp.com/
 3. **Visual Studio**: Either Community (Windows) or Code (Windows, MacOS).
 4. **Node.js**: basic knowledge with **Node.js**.
 5. **JavaScript** basic knowledge with **jQuery**
+6. To play with sending message to Slack for [Demo 4], please create Slack app and generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world)
 
 ## Running locally
 Clone this project or download it. It's recommended to install [GitHub desktop](https://desktop.github.com/). To clone it via command line, use the following (**Terminal** on MacOSX/Linux, **Git Shell** on Windows):
@@ -60,8 +64,17 @@ At the `.vscode\launch.json`, find the env vars and add your Forge Client ID, Se
     "FORGE_CLIENT_ID": "your id here",
     "FORGE_CLIENT_SECRET": "your secret here",
     "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth",
+
+    //to play with webhook for [Demo 4], take some tunnels tool such as ngrok //https://ngrok.com/ to build the tunnel. e.g.
+    // bash ngrok http 3000
+    //then, the environment of tthe webhook will be 
+    "FORGE_WEBHOOK_URL":"http://694ccafe.ngrok.io/webhook/itemAdded",
+    //for [Demo 4],apply post message url of Slack, e.g.
+    //generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world)
+    "SLACK_POST_MESSAGE_URL": "https://hooks.slack.com/services/<<XXXXX>>"
 },
 ```
+
 
 ## Deployment
 
@@ -80,7 +93,8 @@ Watch [this video](https://www.youtube.com/watch?v=Oqa9O20Gj0c) on how deploy sa
 4. click pushpin attributes if it is not null. The corresponding model will be loaded and the issue pushpin will be added by Pushpin Extension
 5. fill in issue title and due date, click [create issue], one new issue will be created. 
 6. select one issue in the issue tree, fill in comment body, and click [create comments], one new comment will be attached to the issue
-7. select one issue in the issue tree, select one local photo, click []
+7. select one issue in the issue tree, select one local photo, then click [Attach Image]. after while, expand the node of attachments of the issue to check if the file is attached. 
+8. Go to BIM 360 >> Field Management >> Issue tab to check if the new issue is created, check its attachments/comments.
 
 ![thumbnail](help/basic.png)   
 
@@ -106,7 +120,12 @@ note： currently, the sample has not implemeted Excel export. The button is for
 2. select source files folder in [Select Source Folder]
 3. select target files folder in [Select Target Folder]
 3. click [Batch Export]. All files will be exported by PDF action of AutoCAD Design Automation. IF any of them failed with the action, a log file will be uploaded to the target folder, and a Field issue will be created with the log as attachment
-note： Plan folder has special behavior with PDF files. So currently, please use other folders to test.
+note： 
+```diff
+-Plan folder has special behavior with PDF files. So currently, please use other folders to test.
+````
+4. if Slack webhook is delegated, a notification will be sent to Slack channel, click the link of Slack message, it will direct back to that issue of BIM 360.
+
 ![thumbnail](help/integration.png)   
  
 
@@ -127,6 +146,7 @@ Blogs:
 
 ### Tips & Tricks
 
+1. to make simple demo, this sample code does not use database to store the issue list. While in reality, it should be the administrator who can refresh the issue list. The refresh should be stored to a database. 
 
 ### Troubleshooting
 

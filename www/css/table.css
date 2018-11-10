@@ -1,0 +1,5 @@
+.dataTable thead .sorting, 
+.dataTable thead .sorting_asc, 
+.dataTable thead .sorting_desc {
+    background : none;
+}

@@ -38,7 +38,7 @@ function checkJobStat(jobId){
         $(".progress-bar").css({"width": "0%"});
         $('.progress-bar').html('failed!');  
       }
-      else if(statusJson.status.includes('migrating')){
+      else if(statusJson.status.includes('exporting')){
         var donePercen = (statusJson.migrated.length + 
                           statusJson.failed.length + 
                           statusJson.exception.length)/statusJson.allFiles;
@@ -50,7 +50,7 @@ function checkJobStat(jobId){
           $('#sourceFoldersTree' + ' li[id="'+ statusJson.failed[i] + '"] a').css("color","red"); 
         }
         for(var i in statusJson.exception){
-          $('#sourceFoldersTree' + ' li[id="'+ statusJson.exception[i] + '"] a').css("color","yellow"); 
+          $('#sourceFoldersTree' + ' li[id="'+ statusJson.exception[i] + '"] a').css("color","blue"); 
         } 
 
         $('#targetFoldersTree').jstree(true).refresh_node($('#targetFoldersTree').jstree("get_selected", true)[0]);
@@ -65,7 +65,7 @@ function checkJobStat(jobId){
 
         $('.progress-bar').html(statusJson.status + 
           ' [all files] ' + statusJson.allFiles + 
-          ' [migrated] ' + statusJson.migrated.length +
+          ' [exported] ' + statusJson.migrated.length +
           ' [failed] ' + statusJson.failed.length + 
           ' [exception] ' + statusJson.exception.length);    
       }
@@ -154,22 +154,38 @@ function prepareFolderTree(projectId,whichFolder) {
 
 }
 
-$(document).ready(function () {   
 
-    //batch job button click
-    $('#btnBatchJob').click(function(rvt){
+function buildWebhook(input){
+   
+  
 
-      if(!$('#sourceFoldersTree').jstree("get_selected", true)){
-        alert('please select one source folder!');
-        return;
-      } 
+  return new Promise(function (resolve, reject) {
+    var params = $('#targetFoldersTree').jstree("get_selected", true)[0].id.split('/');
+    var targetFolderId = params[params.length - 1];
 
-      if(!$('#targetFoldersTree').jstree("get_selected", true)){
-        alert('please select one target folder!');
-        return;
+    jQuery.ajax({
+      url: '/webhook/buildWebhook',
+      contentType: 'application/json',
+      type: 'GET',
+      dataType: 'json',
+      data:  {
+         folderId:targetFolderId
+       },
+      success: function (res) {  
+        resolve({}) 
+      },
+      error: function (error) { 
+        reject({error:error})
       }
+    });
+  });  
+}
 
-      var actString = 'v2_dwg_exportpdf' ; 
+function startJob(){
+
+  return new Promise(function (resolve, reject) {
+
+  var actString = 'v2_dwg_exportpdf' ; 
 
       var params = $('#sourceFoldersTree').jstree("get_selected", true)[0].id.split('/');
       var sourceFolderId = params[params.length - 1];
@@ -188,16 +204,38 @@ $(document).ready(function () {
           'targetFolderId':targetFolderId,
           'actString':actString
         },
-        success: function (res) { 
-
-          $('#integration').prop('disabled', true);
-
-          checkJobStat(res.jobId);
+        success: function (res) {  
+          $('#integration').prop('disabled', true); 
+          resolve({jobId:res.jobId});
         },
-        error: function (res) { 
-          console.log(res);
+        error: function (error) { 
+          reject({error:error})
         }
       });
+    });  
+}
+
+$(document).ready(function () {   
+
+    //batch job button click
+    $('#btnBatchJob').click(function(rvt){ 
+
+      if(!$('#sourceFoldersTree').jstree("get_selected", true)){
+        alert('please select one source folder!');
+        return;
+      } 
+
+      if(!$('#targetFoldersTree').jstree("get_selected", true)){
+        alert('please select one target folder!');
+        return;
+      }
+
+      buildWebhook().then(function(result){
+        return startJob(); 
+      }).then(function(result){
+        checkJobStat(result.jobId); 
+      }).catch(function(result){ 
+      }); 
     }); 
 
     $("#refreshSourceFolder").click(function () {

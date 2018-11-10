@@ -48,6 +48,7 @@ var bimissuesbasic = require('./endpoints/bim.issues.endpoints.basic.js');
 var bimissuereport = require('./endpoints/bim.issues.endpoint.report');
 var bimissuecsv = require('./endpoints/bim.issues.endpoint.csv');
 var bimissuesintegration = require('./endpoints/bim.issues.endpoints.integration');
+var bimwebhook = require('./endpoints/bim.webhook.endpoints');
 
 
 app.use('/', oauth); // oauth workflow
@@ -56,6 +57,6 @@ app.use('/', bimissuesbasic); // BIM Issue API basic demos
 app.use('/', bimissuereport); // BIM Issue statistic 
 app.use('/', bimissuecsv); // BIM Issue export customized CSV  
 app.use('/', bimissuesintegration); // export DWG to PDF (create issue with failure job)
- 
+app.use('/', bimwebhook); // webhook
 
 module.exports = app;
