@@ -59,14 +59,16 @@ module.exports = {
   //some endpoints have not been packaged with Forge SDK
   //most endpoints of Issue API use the same kind of header
   
-  ForgeAPIBaseUrl: 'https://developer.api.autodesk.com/',
+  //some endpoints have not been packaged with Forge SDK
+  //most endpoints of Issue API use the same kind of header
+  
     hqv1: {
-      userprofile_useratme: this.ForgeAPIBaseUrl+'userprofile/v1/users/@me'
+      userprofile_useratme: 'https://developer.api.autodesk.com/userprofile/v1/users/@me'
     },
     //Issue API v1
     fieldissuev1: {
 
-      basedUrl: this.ForgeAPIBaseUrl+'issues/v1/containers/',
+      basedUrl: 'https://developer.api.autodesk.com/issues/v1/containers/',
       httpHeaders: function (access_token) {
         return {
           Authorization: 'Bearer ' + access_token,
@@ -108,7 +110,7 @@ module.exports = {
     dav2:{
       
       createWorkItem:function(){
-        return this.ForgeAPIBaseUrl+'autocad.io/us-east/v2/WorkItems'
+        return 'https://developer.api.autodesk.com/autocad.io/us-east/v2/WorkItems'
       }
     },
     webhook:{
@@ -119,21 +121,21 @@ module.exports = {
         }
       },
       getWebhook:function(system,event){
-        return this.ForgeAPIBaseUrl+'webhooks/v1/systems/'+
+        return 'https://developer.api.autodesk.com/webhooks/v1/systems/'+
         system +
         '/events/'+
         event+
         '/hooks'; 
       },
       createWebhook:function(system,event){
-        return this.ForgeAPIBaseUrl+'webhooks/v1/systems/'+
+        return 'https://developer.api.autodesk.com/webhooks/v1/systems/'+
         system +
         '/events/'+
         event+
         '/hooks'; 
       },
       patchWebhook:function(system,event,hookId){
-        return this.ForgeAPIBaseUrl+'webhooks/v1/systems/'+
+        return 'https://developer.api.autodesk.com/webhooks/v1/systems/'+
         system +
         '/events/'+
         event+
@@ -143,6 +145,6 @@ module.exports = {
       deleteWebHook:function(){
 
       }
-    },
+    }
    
 };
