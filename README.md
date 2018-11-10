@@ -62,8 +62,18 @@ At the `.vscode\launch.json`, find the env vars and add your Forge Client ID, Se
 To play with webhook for [Demo 4], take some tunnels tool such as [ngrok](https://ngrok.com/) to build the tunnel. e.g.
  ```
    bash ngrok http 3000
+   Session Status                online                                            
+   Session Expires               7 hours, 42 minutes                               
+   Version                       2.2.8                                             
+   Region                        United States (us)                                
+   Web Interface                 http://127.0.0.1:4040                             
+   Forwarding                    http://694ccafe.ngrok.io -> localhost:3000        
+   Forwarding                    https://694ccafe.ngrok.io -> localhost:3000       
+                                                                                
+   Connections                   ttl     opn     rt1     rt5     p50     p90       
+                              0       0       0.00    0.00    0.00    0.00 
  ```
-Also for [Demo 4],apply post message url of Slack, e.g. generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world)
+Also for [Demo 4],apply post message url of Slack, e.g. generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world). 
 
 The end result should be as shown below:
 
@@ -71,11 +81,8 @@ The end result should be as shown below:
 "env": { 
     "FORGE_CLIENT_ID": "your id here",
     "FORGE_CLIENT_SECRET": "your secret here",
-    "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth",
-
-    
-    "FORGE_WEBHOOK_URL":"http://694ccafe.ngrok.io/webhook/itemAdded",
-    
+    "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth", 
+    "FORGE_WEBHOOK_URL":"http://694ccafe.ngrok.io/webhook/itemAdded", 
     "SLACK_POST_MESSAGE_URL": "https://hooks.slack.com/services/<<XXXXX>>"
 },
 ```
