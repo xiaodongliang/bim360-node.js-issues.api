@@ -57,7 +57,15 @@ Clone this project or download it. It's recommended to install [GitHub desktop](
 
 Open the folder, at the bottom-right, select **Yes** and **Restore**. This restores the packages (e.g. Autodesk.Forge) and creates the launch.json file. See *Tips & Tricks* for .NET Core on MacOS.
 
-At the `.vscode\launch.json`, find the env vars and add your Forge Client ID, Secret and callback URL. Also define the `ASPNETCORE_URLS` variable. The end result should be as shown below:
+At the `.vscode\launch.json`, find the env vars and add your Forge Client ID, Secret and callback URL. 
+
+To play with webhook for [Demo 4], take some tunnels tool such as [ngrok](https://ngrok.com/) to build the tunnel. e.g.
+ ```
+   bash ngrok http 3000
+ ```
+Also for [Demo 4],apply post message url of Slack, e.g. generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world)
+
+The end result should be as shown below:
 
 ```json
 "env": { 
@@ -65,12 +73,9 @@ At the `.vscode\launch.json`, find the env vars and add your Forge Client ID, Se
     "FORGE_CLIENT_SECRET": "your secret here",
     "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth",
 
-    //to play with webhook for [Demo 4], take some tunnels tool such as ngrok //https://ngrok.com/ to build the tunnel. e.g.
-    // bash ngrok http 3000
-    //then, the environment of tthe webhook will be 
+    
     "FORGE_WEBHOOK_URL":"http://694ccafe.ngrok.io/webhook/itemAdded",
-    //for [Demo 4],apply post message url of Slack, e.g.
-    //generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world)
+    
     "SLACK_POST_MESSAGE_URL": "https://hooks.slack.com/services/<<XXXXX>>"
 },
 ```
@@ -122,7 +127,7 @@ note： currently, the sample has not implemeted Excel export. The button is for
 3. click [Batch Export]. All files will be exported by PDF action of AutoCAD Design Automation. IF any of them failed with the action, a log file will be uploaded to the target folder, and a Field issue will be created with the log as attachment
 note： 
 ```diff
--Plan folder has special behavior with PDF files. So currently, please use other folders to test.
+- Plan folder has special behavior with PDF files. So currently, please use other folders to test.
 ````
 4. if Slack webhook is delegated, a notification will be sent to Slack channel, click the link of Slack message, it will direct back to that issue of BIM 360.
 
