@@ -29,7 +29,7 @@ This repository demonstrates BIM 360 Field Issues API by a couple of scenarios:
 
 
 ## Live version
-http://au2018-bim360-issue.herokuapp.com/
+http://bim360-nodejs-issues-dashboard.herokuapp.com/
 
 # Setup
 ## Prerequisites
