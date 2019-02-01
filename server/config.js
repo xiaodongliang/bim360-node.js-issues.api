@@ -111,6 +111,17 @@ module.exports = {
         return this.ForgeAPIBaseUrl+'autocad.io/us-east/v2/WorkItems'
       }
     },
+    //Design Automation V3 
+    dav3:{
+      
+      createWorkItem:function(){
+         return 'https://developer.api.autodesk.com/da/us-east/v3/workitems'
+      },
+      getWorkItemStatus:function(id){
+        return 'https://developer.api.autodesk.com/da/us-east/v3/workitems/'+id
+     },
+     dwgToPDFActName:'<your activiy name of v3 DA>'
+    },
     webhook:{
       httpHeaders: function (access_token) {
         return {

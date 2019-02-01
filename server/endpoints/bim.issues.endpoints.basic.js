@@ -41,6 +41,8 @@ var bimIssuesServicesWrite = require('../services/bim.issues.services.write');
 var projectsServices = require('../services/dm.projects.services');
 
 var bimDatabase = require('../bim.database');
+var progress = require('request-progress');
+
 
 
 router.get('/issuebasic/getTreeNode', function (req, res) {
@@ -289,6 +291,49 @@ router.get('/issuebasic/getAttachment', function (req, res) {
     }); 
 });
 
+router.get('/issuebasic/temp', function (req, res) {
+
+  // The options argument is optional so you can omit it 
+progress(request.get({
+  url: 'https://developer.api.autodesk.com/oss/v2/buckets/bauma-2018/objects/BAUMA-Inventor2Revit-high.rvt',
+  headers: {
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6Imp3dF9zeW1tZXRyaWNfa2V5In0.eyJjbGllbnRfaWQiOiJHTFJWOTZmTjROZmJhYVNPbzhOU25ONkhxOUdVaTd3NiIsImV4cCI6MTU0MjY4OTUxOSwic2NvcGUiOlsiZGF0YTpyZWFkIiwiZGF0YTp3cml0ZSIsImJ1Y2tldDpjcmVhdGUiLCJidWNrZXQ6cmVhZCIsImFjY291bnQ6cmVhZCJdLCJhdWQiOiJodHRwczovL2F1dG9kZXNrLmNvbS9hdWQvand0ZXhwNjAiLCJqdGkiOiI5YXVLblU2QVp3RDRCY0NMTE1xdkw4dkV5RTExbHRJWWQxV1pOcnBNVkhKNWJQVGpyYUhJNDJrNXJTeGtrdFlsIn0.2bXde__NN1_BnxLvZO9G8qiEl5zHUtZ-lqOuzrwM6b4' 
+     
+  },
+  encoding: 'binary'
+}), {
+  // throttle: 2000,                    // Throttle the progress event to 2000ms, defaults to 1000ms 
+  // delay: 1000,                       // Only start to emit after 1000ms delay, defaults to 0ms 
+  // lengthHeader: 'x-transfer-length'  // Length header to use, defaults to content-length 
+})
+.on('progress', function (state) {
+  // The state is an object that looks like this: 
+  // { 
+  //     percent: 0.5,               // Overall percent (between 0 to 1) 
+  //     speed: 554732,              // The download speed in bytes/sec 
+  //     size: { 
+  //         total: 90044871,        // The total payload size in bytes 
+  //         transferred: 27610959   // The transferred payload size in bytes 
+  //     }, 
+  //     time: { 
+  //         elapsed: 36.235,        // The total elapsed seconds since the start (3 decimals) 
+  //         remaining: 81.403       // The remaining seconds to finish (3 decimals) 
+  //     } 
+  // } 
+  console.log('progress ', state);
+})
+.on('error', function (err) {
+  // Do something with err 
+  console.log('error!')
+
+})
+.on('end', function () {
+  // Do something after request finishes 
+  console.log('done!')
+})
+.pipe(fs.createWriteStream('111.rvt')); 
+  
+});
 
 router.post('/issuebasic/createIssues', jsonParser, function (req, res) {
 

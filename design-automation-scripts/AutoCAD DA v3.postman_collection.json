@@ -1,0 +1,609 @@
+{
+	"info": {
+		"_postman_id": "21c15fba-f38e-4020-b983-794bef16263f",
+		"name": "AutoCAD DA v3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "00-New token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb820137-d158-4775-a325-0975a8ab1881",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"pm.environment.set(\"dasApiToken\", body[\"access_token\"]);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client_secret}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "code:all",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/authentication/v1/authenticate",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"authentication",
+						"v1",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "01-Create nickname",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b993251-5b30-4bab-bc41-2f15cc54d56e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"nickname\": \"{{dasNickName}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/forgeapps/me",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"forgeapps",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02-Create app bundle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4021abd2-aa98-4862-85eb-ee741698d6c4",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"pm.environment.set(\"appBundleUrl\", body[\"uploadParameters\"][\"endpointURL\"]);",
+							"pm.environment.set(\"appBundleVersion\", body[\"version\"]);",
+							"pm.environment.set(\"appBundleFormDataKey\", body[\"uploadParameters\"][\"formData\"][\"key\"]);",
+							"pm.environment.set(\"appBundleFormDataPolicy\", body[\"uploadParameters\"][\"formData\"][\"policy\"]);",
+							"pm.environment.set(\"appBundleFormDataSignature\", body[\"uploadParameters\"][\"formData\"][\"x-amz-signature\"]);",
+							"pm.environment.set(\"appBundleFormDataCredential\", body[\"uploadParameters\"][\"formData\"][\"x-amz-credential\"]);",
+							"pm.environment.set(\"appBundleFormDataDate\", body[\"uploadParameters\"][\"formData\"][\"x-amz-date\"]);",
+							"pm.environment.set(\"appBundleFormDataToken\", body[\"uploadParameters\"][\"formData\"][\"x-amz-security-token\"]);",
+							"pm.environment.set(\"appBundleFormRedirect\", body[\"uploadParameters\"][\"formData\"][\"success_action_redirect\"]);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"id\": \"{{appBudleName}}\",\r\n\t\"engine\": \"Autodesk.Revit+2019\",\r\n\t\"description\": \"Extract all rooms of a Revit file based on Revit 2019\"\r\n}"
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/appbundles",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"appbundles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03-Upload app bundle to Design Automation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f15df6e5-8f98-4ea7-8e21-9b68875f57aa",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6029064c-c08c-43db-a281-b30edd1689fa",
+						"exec": [
+							"pm.environment.unset(\"deleteWallsAppFormDataKey\");",
+							"pm.environment.unset(\"deleteWallsAppFormDataPolicy\");",
+							"pm.environment.unset(\"deleteWallsAppFormDataSignature\");",
+							"pm.environment.unset(\"deleteWallsAppFormDataCredential\");",
+							"pm.environment.unset(\"deleteWallsAppFormDataDate\");",
+							"pm.environment.unset(\"deleteWallsAppFormDataToken\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "key",
+							"value": "{{appBundleFormDataKey}}",
+							"type": "text"
+						},
+						{
+							"key": "content-type",
+							"value": "application/octet-stream",
+							"type": "text"
+						},
+						{
+							"key": "policy",
+							"value": "{{appBundleFormDataPolicy}}",
+							"type": "text"
+						},
+						{
+							"key": "success_action_status",
+							"value": "200",
+							"type": "text"
+						},
+						{
+							"key": "x-amz-signature",
+							"value": "{{appBundleFormDataSignature}}",
+							"type": "text"
+						},
+						{
+							"key": "x-amz-credential",
+							"value": "{{appBundleFormDataCredential}}",
+							"type": "text"
+						},
+						{
+							"key": "x-amz-algorithm",
+							"value": "AWS4-HMAC-SHA256",
+							"type": "text"
+						},
+						{
+							"key": "x-amz-date",
+							"value": "{{appBundleFormDataDate}}",
+							"type": "text"
+						},
+						{
+							"key": "x-amz-server-side-encryption",
+							"value": "AES256",
+							"type": "text"
+						},
+						{
+							"key": "x-amz-security-token",
+							"value": "{{appBundleFormDataToken}}",
+							"type": "text"
+						},
+						{
+							"key": "success_action_redirect",
+							"value": "{{appBundleFormRedirect}}",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "{{appBundleUrl}}",
+					"host": [
+						"{{appBundleUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04-Create a new app bundle alias",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"version\": {{appBundleVersion}},\r\n  \"id\": \"test\"\r\n}"
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/appbundles/{{appBudleName}}/aliases",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"appbundles",
+						"{{appBudleName}}",
+						"aliases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05-Create activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a1eda547-e6c7-4073-a773-0fc897166bfa",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"pm.environment.set(\"activityVersion\", body[\"version\"]);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"commandLine\": [\n        \"$(engine.path)\\\\accoreconsole.exe /i $(args[HostDwg].path) /s $(settings[script].path)\"\n    ],\n    \"parameters\": {\n        \"HostDwg\": {\n            \"verb\": \"get\",\n            \"description\": \"Host drawing to be loaded into acad.\",\n            \"localName\": \"$(HostDwg)\"\n        },\n        \"Result\": {\n            \"verb\": \"post\",\n            \"description\": \"Results\",\n            \"localName\": \"result.pdf\"\n        }\n    },\n    \"engine\": \"Autodesk.AutoCAD+23\",\n    \"appbundles\": [],\n    \"settings\": {\n        \"script\": {\n            \"value\": \"_tilemode 0 -export _pdf _all result.pdf\\n\"\n        }\n    },\n    \"description\": \"PlotToPdf for all layouts.\",\n     \"id\": \"{{activityName}}\"\n}"
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/activities",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"activities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06-Create activity alias",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{activityAlias}}\",\r\n    \"version\": 1  \r\n}"
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/activities/{{activityName}}/aliases",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"activities",
+						"{{activityName}}",
+						"aliases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07-Send Workitem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bba6b291-c09f-4f45-b6a3-f7b727b6b38c",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"pm.environment.set(\"workitemId\", body[\"id\"]);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"activityId\": \"{{dasNickName}}.{{activityName}}+{{activityAlias}}\",\r\n  \"arguments\": {\r\n    \"HostDwg\": {\r\n      \"url\": \"<your source dwg url>\"\r\n    },\r\n    \"Result\": {\r\n      \"verb\": \"put\",\r\n      \"url\": \"<result pdf url>\"\r\n    }\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/workitems",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"workitems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08-Get Workitem status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/workitems/{{workitemId}}",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"workitems",
+						"{{workitemId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get list of appbundles",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/appbundles",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"appbundles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get list of activities",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/activities",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"activities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete app bundle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cc2915c1-911a-4458-a425-8641e8fca96e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/appbundles/{{appBudleName}}",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"appbundles",
+						"{{appBudleName}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0bf87f3f-0d23-46b1-82cf-79c821285114",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{dasApiToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{dasApiRoot}}/activities/{{activityName}}",
+					"host": [
+						"{{dasApiRoot}}"
+					],
+					"path": [
+						"activities",
+						"{{activityName}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

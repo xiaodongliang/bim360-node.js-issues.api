@@ -10,19 +10,11 @@ This repository demonstrates BIM 360 Field Issues API by a couple of scenarios: 
 [![Viewer](https://img.shields.io/badge/Viewer-v6-green.svg)](http://developer.autodesk.com/)
 
 [![BIM-360](https://img.shields.io/badge/BIM%20360-v1-green.svg)](http://developer.autodesk.com/)
-[![Design Automation](https://img.shields.io/badge/Design%20Automation-v2-green.svg)](http://developer.autodesk.com/)
+[![Design Automation](https://img.shields.io/badge/Design%20Automation-v3-green.svg)](http://developer.autodesk.com/)
 
 [![License](http://img.shields.io/:license-mit-red.svg)](http://opensource.org/licenses/MIT)
 [![Level](https://img.shields.io/badge/Level-Intermediate-blue.svg)](http://developer.autodesk.com/)
 
-
-
-```diff
--As of this writing, you see two separate set of APIs for Document and Field Issues. 
--They are v1. Soon, they are going to merge. 
--After that happens, you can use similar endpoints like Field Issues: And they will be unified Issues. 
--In this sample, most codes are demoed with Field Issues endpoints
-```
 
 ## Description
 This repository demonstrates BIM 360 Field Issues API by a couple of scenarios: 
@@ -41,7 +33,7 @@ http://au2018-bim360-issue.herokuapp.com/
 
 # Setup
 ## Prerequisites
-1. **BIM 360 Account**: must be Account Admin to add the app integration. [Learn about provisioning](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps).
+1. **BIM 360 Account**: must be Account Admin to add the app integration. [Learn about provisioning](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). 
 2. **Forge Account**: Learn how to create a Forge Account, activate subscription and create an app at [this tutorial](http://learnforge.autodesk.io/#/account/). 
 3. **Visual Studio**: Either Community (Windows) or Code (Windows, MacOS).
 4. **Node.js**: basic knowledge with **Node.js**.
@@ -128,6 +120,11 @@ note： currently, the sample has not implemeted Excel export. The button is for
 
 
 ### Demo 4: Export DWG to PDF (create issue with failure job)
+In this demo, a custom activity of Forge Design Automation will be used to export DWG to PDF. To create such activity, follow the steps on [Design Automation API help](https://forge.autodesk.com/en/docs/design-automation/v3/tutorials/)
+
+A Postman scripts are available for creating. Input your Forge credential, get token, create dickname, create activity, create activity alias, and finally get all activities to check the final name.
+After the activity is ready, input the activity name to [config](./server/config.js) file
+
 1. Select one project in the left panel tree.
 2. select source files folder in [Select Source Folder]
 3. select target files folder in [Select Target Folder]
@@ -145,6 +142,8 @@ note：
 - [BIM 360 API](https://developer.autodesk.com/en/docs/bim360/v1/overview/) and [App Provisioning](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps)
 - [Data Management API](https://developer.autodesk.com/en/docs/data/v2/overview/)
 - [Viewer](https://developer.autodesk.com/en/docs/viewer/v6)
+- [Design Automation API](https://forge.autodesk.com/en/docs/design-automation/v2/developers_guide/overview/)
+
 
 Tutorials:
 

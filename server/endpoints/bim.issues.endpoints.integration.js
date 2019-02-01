@@ -166,13 +166,13 @@ function startWorkflow(input){
           eachInput.outputItemStg = 'https://developer.api.autodesk.com/oss/v2/buckets/wip.dm.prod/objects/'+resourceId;
            
  
-          if(eachInput.actString.includes('v2'))
-            return daServices.createDAWorkItemV2(eachInput);
+          if(eachInput.actString.includes('v3'))
+            return daServices.createDAWorkItemV3(eachInput);
           
 
         }).then(function(result){  
 
-          console.log('createDAWorkItemV2')
+          console.log('createDAWorkItemV3')
 
           if(result.status == 'failed') { 
 
