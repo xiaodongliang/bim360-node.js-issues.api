@@ -79,6 +79,12 @@ The end result should be as shown below:
 },
 ```
 
+To run it, install the required packages, set the enviroment variables with your client ID & secret and finally start it. Via command line, navigate to the folder where this repository was cloned and use the following:
+
+    npm install 
+    node start.js
+
+Open the browser: [http://localhost:3000](http://localhost:3000). And follow the thumbnail.gif to play the features.
 
 ## Deployment
 
