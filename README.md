@@ -43,7 +43,7 @@ http://bim360-nodejs-issues-dashboard.herokuapp.com/
 ## Running locally
 Clone this project or download it. It's recommended to install [GitHub desktop](https://desktop.github.com/). To clone it via command line, use the following (**Terminal** on MacOSX/Linux, **Git Shell** on Windows):
 
-    git clone https://github.com/xiaodongliang/bim360-node.js-issues.api
+    git clone https://github.com/autodesk-forge/bim360-node.js-issues.api
 
 **Visual Sutdio Code** (Windows, MacOS):
 
