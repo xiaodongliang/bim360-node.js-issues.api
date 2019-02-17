@@ -35,9 +35,9 @@ http://bim360-nodejs-issues-dashboard.herokuapp.com/
 ## Prerequisites
 1. **BIM 360 Account**: must be Account Admin to add the app integration. [Learn about provisioning](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps). 
 2. **Forge Account**: Learn how to create a Forge Account, activate subscription and create an app at [this tutorial](http://learnforge.autodesk.io/#/account/). 
-3. **Visual Studio**: Either Community (Windows) or Code (Windows, MacOS).
-4. **Node.js**: basic knowledge with **Node.js**.
-5. **JavaScript** basic knowledge with **jQuery**
+3. **Node.js**: basic knowledge with [**Node.js**](https://nodejs.org/en/).
+4. **JavaScript** basic knowledge with **jQuery**
+5.  **Ngrok**, in order to play with **Demo 4** locally   
 6. To play with sending message to Slack for [Demo 4], please create Slack app and generate post url by [Slack tutorial](https://api.slack.com/tutorials/slack-apps-hello-world)
 
 ## Running locally
@@ -148,7 +148,7 @@ note：
 - [BIM 360 API](https://developer.autodesk.com/en/docs/bim360/v1/overview/) and [App Provisioning](https://forge.autodesk.com/blog/bim-360-docs-provisioning-forge-apps)
 - [Data Management API](https://developer.autodesk.com/en/docs/data/v2/overview/)
 - [Viewer](https://developer.autodesk.com/en/docs/viewer/v6)
-- [Design Automation API](https://forge.autodesk.com/en/docs/design-automation/v2/developers_guide/overview/)
+- [Design Automation API](https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/overview/)
 
 
 Tutorials:
