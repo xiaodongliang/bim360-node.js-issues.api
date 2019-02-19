@@ -35,7 +35,7 @@ $(document).ready(function () {
 
 function forgeSignIn() {
   jQuery.ajax({
-    url: '/user/authenticate',
+    url: '/api/forge/user/authenticate',
     success: function (rootUrl) {
       location.href = rootUrl;
     }
@@ -44,7 +44,7 @@ function forgeSignIn() {
 
 function forgeLogoff() {
   jQuery.ajax({
-    url: '/user/logoff',
+    url: '/api/forge/user/logoff',
     success: function (oauthUrl) {
       location.href = oauthUrl;
     }
@@ -54,7 +54,7 @@ function forgeLogoff() {
 function getForgeToken() {
   var token = '';
   jQuery.ajax({
-    url: '/user/token',
+    url: '/api/forge/user/token',
     success: function (res) {
       token = res;
     },
@@ -67,7 +67,7 @@ function getForgeToken() {
 function getForgeUserProfile(onsuccess) {
   var profile = '';
   jQuery.ajax({
-    url: '/user/profile',
+    url: '/api/forge/user/profile',
     success: function (profile) {
       onsuccess(profile);
     }

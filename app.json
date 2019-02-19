@@ -1,7 +1,7 @@
 {
   "name": "bim360-node.js-issues.api",
   "description": "BIM 360 Issues API Demps",
-  "repository": "https://github.com/xiaodongliang/bim360-node.js-issues.api",
+  "repository": "https://github.com/autodesk-forge/bim360-node.js-issues.api",
   "logo": "https://avatars0.githubusercontent.com/u/8017462?v=3&s=200",
   "keywords": [
       "autodesk",
@@ -21,7 +21,7 @@
      },
       "FORGE_WEBHOOK_URL": {
           "description": "Callback URL for Forge Webhook response",
-          "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com/webhook/itemAdded"
+          "value": "https://<<YOUR HEROKU APP NAME HERE>>.herokuapp.com"
       },
       "SLACK_POST_MESSAGE_URL": {
         "description": "your own link for posting message to your own Slack channel"

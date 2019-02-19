@@ -35,7 +35,7 @@
 function exportCSV(projectHref){ 
 
   jQuery.ajax({
-    url: '/issuecsv/startjob',
+    url: '/api/forge/issuecsv/startjob',
     contentType: 'application/json',
     type: 'GET',
     dataType: 'json',
@@ -58,7 +58,7 @@ function exportCSV(projectHref){
 
 function checkExportJob(jobId){
   jQuery.ajax({
-    url: '/issuecsv/checkjob',
+    url: '/api/forge/issuecsv/checkjob',
     contentType: 'application/json',
     type: 'GET',
     dataType: 'json',

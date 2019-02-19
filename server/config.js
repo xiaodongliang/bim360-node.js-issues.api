@@ -23,7 +23,8 @@ module.exports = {
   // this this callback URL when creating your client ID and secret
   //set enviroment variables or hard-code here 
 
-   callbackURL: process.env.FORGE_CALLBACK_URL || 'http://localhost:3000/api/forge/callback/oauth',
+   callbackURL: process.env.FORGE_CALLBACK_URL || 
+        '<your web host url>/api/forge/callback/oauth',
 
   // set enviroment variables or hard-code here
   //apply your Forge client credential
@@ -33,9 +34,11 @@ module.exports = {
     client_secret: process.env.FORGE_CLIENT_SECRET || '<your Forge client secret>'
   },
 
+
   //input your website url such as 
   //http://mywebsite.com/webhook/itemAdded
-  webhookCallBackURL: process.env.FORGE_WEBHOOK_URL || '<your web host url>/webhook/itemAdded',
+  webhookCallBackURL: process.env.FORGE_WEBHOOK_URL + '/webhook/itemAdded' || 
+                      '<your web host url>/webhook/itemAdded',
 
   //input your own link for posting message to your own Slack channel
   //check the Slack help:

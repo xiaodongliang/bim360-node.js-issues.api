@@ -319,7 +319,7 @@ function destoryAllViews(){
 }
 function checkIssueStatJob(jobId){
   jQuery.ajax({
-    url: '/issuereport/checkjob',
+    url: '/api/forge/issuereport/checkjob',
     contentType: 'application/json',
     type: 'GET',
     dataType: 'json',
@@ -337,7 +337,7 @@ function checkIssueStatJob(jobId){
           $('#loader_stats').css({ display: "none" });  
            if($('#radioDocIssue_report').is(":checked") )
            {
-            $.get('/issuereport/get_docissue',function(res){
+            $.get('/api/forge/issuereport/get_docissue',function(res){
               var docIssues = JSON.parse(res); 
               refreshIssueOverview(docIssues.overview);
               refreshModelvsProjectView(docIssues.modelvsproj);
@@ -345,7 +345,7 @@ function checkIssueStatJob(jobId){
               refreshWeekDue(docIssues.weekdue); 
             }); 
           }else{
-            $.get('/issuereport/get_fieldissue',function(res){
+            $.get('/api/forge/issuereport/get_fieldissue',function(res){
               var fieldIssues = JSON.parse(res); 
               refreshIssueOverview(fieldIssues.overview);
               refreshRootcause(fieldIssues.rootcause);
@@ -374,7 +374,7 @@ function refreshDashboard(projectHref,isRefresh=true){
                   + '-' +date_input.getDate();
 
   jQuery.ajax({
-    url: '/issuereport/startjob',
+    url: '/api/forge/issuereport/startjob',
     contentType: 'application/json',
     type: 'GET',
     dataType: 'json',

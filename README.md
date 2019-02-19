@@ -74,7 +74,7 @@ The end result should be as shown below:
     "FORGE_CLIENT_ID": "your id here",
     "FORGE_CLIENT_SECRET": "your secret here",
     "FORGE_CALLBACK_URL": "http://localhost:3000/api/forge/callback/oauth", 
-    "FORGE_WEBHOOK_URL":"http://694ccafe.ngrok.io/webhook/itemAdded", 
+    "FORGE_WEBHOOK_URL":"http://694ccafe.ngrok.io", 
     "SLACK_POST_MESSAGE_URL": "https://hooks.slack.com/services/<<XXXXX>>"
 },
 ```

@@ -18,7 +18,7 @@
 
 function checkJobStat(jobId){
   jQuery.ajax({
-    url: '/integration/checkjob',
+    url: '/api/forge/integration/checkjob',
     contentType: 'application/json',
     type: 'GET',
     dataType: 'json',
@@ -87,7 +87,7 @@ function prepareFolderTree(projectId,whichFolder) {
     'core': {
       'themes': {"icons": true},
       'data': {
-        "url": '/dm/getTreeNode',
+        "url": '/api/forge/dm/getTreeNode',
         "dataType": "json",
         "multiple": false,
         "cache": false,
@@ -164,7 +164,7 @@ function buildWebhook(input){
     var targetFolderId = params[params.length - 1];
 
     jQuery.ajax({
-      url: '/webhook/buildWebhook',
+      url: '/api/forge/webhook/buildWebhook',
       contentType: 'application/json',
       type: 'GET',
       dataType: 'json',
@@ -194,7 +194,7 @@ function startJob(){
 
 
       jQuery.ajax({
-        url: '/integration/startjob',
+        url: '/api/forge/integration/startjob',
         contentType: 'application/json',
         type: 'GET',
         dataType: 'json',

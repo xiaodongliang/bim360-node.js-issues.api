@@ -51,13 +51,13 @@ var bimissuesintegration = require('./endpoints/bim.issues.endpoints.integration
 var bimwebhook = require('./endpoints/bim.webhook.endpoints');
 
 
-app.use('/', oauth); // oauth workflow
-app.use('/', dm); // BIM hub,projects,folder,files
-app.use('/', bimissuesbasic); // BIM Issue API basic demos
-app.use('/', bimissuereport); // BIM Issue statistic 
-app.use('/', bimissuecsv); // BIM Issue export customized CSV  
-app.use('/', bimissuesintegration); // export DWG to PDF (create issue with failure job)
-app.use('/', bimwebhook); // webhook
+app.use('/api/forge', oauth); // oauth workflow
+app.use('/api/forge', dm); // BIM hub,projects,folder,files
+app.use('/api/forge', bimissuesbasic); // BIM Issue API basic demos
+app.use('/api/forge', bimissuereport); // BIM Issue statistic 
+app.use('/api/forge', bimissuecsv); // BIM Issue export customized CSV  
+app.use('/api/forge', bimissuesintegration); // export DWG to PDF (create issue with failure job)
+app.use('/api/forge', bimwebhook); // webhook
 
 
 module.exports = app;

@@ -25,7 +25,7 @@ function prepareBIMIssuesTree(projetId) {
     'core': {
       'themes': {"icons": true},
       'data': {
-        "url": '/issuebasic/getTreeNode',
+        "url": '/api/forge/issuebasic/getTreeNode',
         "dataType": "json",
         "multiple": false,
         "cache": false,
@@ -154,7 +154,7 @@ function createNewIssue(){
   
  
   jQuery.ajax({
-    url: '/issuebasic/createIssues',
+    url: '/api/forge/issuebasic/createIssues',
     contentType: 'application/json',
     type: 'POST',
     dataType: 'json',
@@ -196,7 +196,7 @@ function createNewComments(){
   var issueId = params[params.length - 1]; 
 
   jQuery.ajax({
-    url: '/issuebasic/createIssuesComments',
+    url: '/api/forge/issuebasic/createIssuesComments',
     contentType: 'application/json',
     type: 'POST',
     dataType: 'json',
@@ -240,7 +240,7 @@ function attachLocalFile2Issue(){
    
 
   jQuery.ajax({
-    url: '/issuebasic/createIssueAttachment',
+    url: '/api/forge/issuebasic/createIssueAttachment',
     contentType: 'application/json',
     type: 'POST',
     dataType: 'json',
@@ -294,7 +294,7 @@ function uploadPhoto(file){
   
 
   $.ajax({
-    url: '/issuebasic/uploadphoto',
+    url: '/api/forge/issuebasic/uploadphoto',
     type: 'POST',
     data: formData,
     processData: false,

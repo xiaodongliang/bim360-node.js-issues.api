@@ -3,26 +3,26 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "body-parser": "1.17.2",
+    "body-parser": "^1.18.3",
     "cookie-parser": "1.4.3",
     "csv-writer": "1.0.1",
     "es6-promise": "^4.2.5",
     "es6-promise-pool": "^2.5.0",
-    "express": "4.15.3",
-    "express-session": "1.15.3",
-     "forge-apis": "0.4.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "forge-apis": "0.4.1",
     "formidable": "^1.2.1",
-    "isomorphic-fetch": "^2.2.1", 
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.11",
     "moment": "2.19.3",
     "octicons": "^8.0.0",
     "popper.js": "^1.14.3",
-    "request": "^2.81.0",
-    "lodash": "^4.17.11"
-
+    "request": "^2.88.0",
+    "request-progress": "^3.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/xiaodongliang/bim360-node.js-issues.api"
+    "url": "https://github.com/autodesk-forge/bim360-node.js-issues.api"
   },
   "scripts": {
     "start": "NODE_ENV=production node start.js",

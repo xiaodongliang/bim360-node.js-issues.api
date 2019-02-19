@@ -30,7 +30,7 @@ var forgeSDK = require('forge-apis');
 var config = require('../config');
 var UserSession = require('../services/userSession'); 
 
-router.get('/api/forge/clientID', function (req, res) {
+router.get('/clientID', function (req, res) {
   res.json({
     'ForgeClientId': config.credentials.client_id
   });
@@ -69,7 +69,7 @@ router.get('/user/authenticate', function (req, res) {
 });
 
 // wait for Autodesk callback (oAuth callback)
-router.get('/api/forge/callback/oauth', function (req, res) {
+router.get('/callback/oauth', function (req, res) {
 
   var code = req.query.code;
   var userSession = new UserSession(req.session);

@@ -113,7 +113,7 @@ function getBIMHubs() {
   );  
   //get projects list 
   jQuery.ajax({
-    url: '/dm/getTreeNode',
+    url: '/api/forge/dm/getTreeNode',
      type: 'GET' ,
      "data":  {id: "#"},
      success: function (res) {  
@@ -156,7 +156,7 @@ function getProjects(hubId,projViewId){
 
   //get projects list 
   jQuery.ajax({
-    url: '/dm/getTreeNode',
+    url: '/api/forge/dm/getTreeNode',
      type: 'GET' ,
      "data":  {id: hubId},
      success: function (res) {  

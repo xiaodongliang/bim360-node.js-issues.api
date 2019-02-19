@@ -75,7 +75,7 @@ function onItemLoadFail(errorCode) {
 
 function getForgeToken() {
   jQuery.ajax({
-    url: '/user/token',
+    url: '/api/forge/user/token',
     success: function(res) {
       token = res;
     },
