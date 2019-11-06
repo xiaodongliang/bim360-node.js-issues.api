@@ -37,7 +37,7 @@ var utility = require('../utility');
         if (error) {
            reject({ error: error });
         } else {
-          resolve({fieldIssueTypes:JSON.parse(body).data});
+          resolve({fieldIssueTypes:JSON.parse(body).results});
         }
       });
   });
@@ -255,7 +255,7 @@ return new Promise(function (resolve, reject) {
 
         attributes.push(utility.prepareItemForIssueTree(
           '',
-          'issue_type: ' + utility.findIssueType(input.containerId, attributesArray.issue_type),
+          'issue_type: ' + utility.findIssueType(input.containerId, attributesArray.ng_issue_type_id),
           'attributes',
           false
         ));

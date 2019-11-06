@@ -118,6 +118,14 @@ module.exports = {
           } 
         }  
       },
+      getRootcauseByContainer:function(containerId){
+        for(var hubId in bimDatabase){ 
+          for(var projectId in bimDatabase[hubId].projects){
+            if(bimDatabase[hubId].projects[projectId].issuesContainerId == containerId) 
+              return bimDatabase[hubId].projects[projectId].fieldRootcauses; 
+          } 
+        }  
+      },
       refreshDumpIssue:function(containerId,_json,isDoc){
         if(containerId in bimDatabase)
             isDoc?bimDatabase[containerId].doc_all_issue_json = _json:

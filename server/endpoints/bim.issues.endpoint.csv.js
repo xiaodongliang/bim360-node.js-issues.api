@@ -32,7 +32,7 @@ router.get('/issuecsv/downloadCSV', function (req, res) {
         res.download(file_full_csv_name);  
     }
     else{
-      res.status(500).json({error:'no such csv!' + jobId} );   
+        res.status(500).json({error:'no such csv!' + jobId} );   
     } 
 });
 
@@ -88,10 +88,9 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
         }else{
             var projectName = bimDatabase.getProjectInfo(projectId).projectName;
             var prefix = isDocIssue?'-Document':'-Field'
-            var date = new Date(); 
-            var jobId = projectName
-                        + prefix
-                        +'- Issues - ' 
+            var date = new Date();  
+        
+            var jobId = 'Issues - ' 
                         + date.getFullYear()
                         + '.' + (date.getMonth() + 1)
                         + '.' + date.getDate()

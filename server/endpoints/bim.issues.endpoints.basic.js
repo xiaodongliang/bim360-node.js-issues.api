@@ -348,8 +348,8 @@ router.post('/issuebasic/createIssues', jsonParser, function (req, res) {
   var projectId = params[params.length - 1];
 
   var issuesContainerId = bimDatabase.getIssueContainerId(projectId); 
-  if(!issuesContainerId)
-    {
+  if(!issuesContainerId){
+      console.log('issuesContainerId is null')
       res.status(500).end();
       return;
     }
@@ -361,6 +361,24 @@ router.post('/issuebasic/createIssues', jsonParser, function (req, res) {
   var assigned_to_type = req.body.assigned_to_type;
   var due_date = req.body.due_date;
 
+  var ng_issue_types= bimDatabase.getIssueTypesByContainer(issuesContainerId)
+  if(!ng_issue_types || ng_issue_types.length==0){
+    console.log('ng_issue_types is null') 
+    res.status(500).end();
+    return;
+  }  
+  //hard-coded for simple demo
+  var root_causes = bimDatabase.getRootcauseByContainer(issuesContainerId)
+  if(!root_causes || root_causes.length==0){
+    console.log('root_causes is null') 
+    res.status(500).end();
+    return;
+  }  
+  //hard-coded for simple demo
+  var ng_issue_type_id = ng_issue_types[0].id
+  var ng_issue_subtype_id = ng_issue_types[0].subtypes[0].id 
+  var root_cause_id = root_causes[0].id 
+
   var data = {
     type: 'quality_issues',
           attributes: {
@@ -368,9 +386,9 @@ router.post('/issuebasic/createIssues', jsonParser, function (req, res) {
             'assigned_to': assigned_to,
             'assigned_to_type': assigned_to_type,
             'due_date': due_date,
-            'ng_issue_type_id': 'd73dc282-8ff3-44cb-9db9-84e92fdfe024', //hard-coded for simple demo
-            'ng_issue_subtype_id': '202d59b1-1c2b-4270-824c-d53f3c3754bc',//hard-coded for simple demo
-            'root_cause_id': 'aff4b70b-54aa-4e13-92b4-49caf542bef4'//hard-coded for simple demo
+            'ng_issue_type_id': ng_issue_type_id, 
+            'ng_issue_subtype_id':ng_issue_subtype_id,
+            'root_cause_id': root_cause_id
      }
    } 
    input={
@@ -455,13 +473,13 @@ router.post('/issuebasic/createIssueAttachment', jsonParser, function (req, res)
     }).then(function(result){
       console.log('attach item to issue succeeded!');
 
-      if (fs.exists(input.file_full_path_name))
-        fs.unlink(input.file_full_path_name);
-      res.json({attachment_id: result.attachment_id });
+      if (fs.existsSync(input.file_full_path_name))
+        fs.unlinkSync(input.file_full_path_name);
+      res.status(200).json({});
 
     }).catch(function (result) {
-      if (fs.exists(file_full_path_name))
-        fs.unlink(file_full_path_name);
+      if (fs.existsSync(file_full_path_name))
+        fs.unlinkSync(file_full_path_name);
       console.log(result.error);
       res.status(500).end();
     }); 
@@ -471,28 +489,38 @@ router.post('/issuebasic/createIssueAttachment', jsonParser, function (req, res)
 
 router.post('/issuebasic/uploadphoto', function (req, res) {
 
-  var form = new formidable.IncomingForm();
+  try{
+    var form = new formidable.IncomingForm();
 
-  form.multiples = true;
+    form.multiples = true;
 
-  form.uploadDir = __dirname + '/../downloads';
+    form.uploadDir = __dirname + '/../downloads';
 
-  form.on('file', function (field, file) {
-    fs.rename(file.path, path.join(form.uploadDir, file.name));
-  });
+    form.on('file',  (field, file) => {
+      fs.rename(file.path, path.join(form.uploadDir, file.name),(err)=>{
+        if(err)
+          res.status(500).end();   
+      });
+    });
 
-  // log any errors that occur
-  form.on('error', function (err) {
-    console.log('An error has occured: \n' + err);
-  });
+    // log any errors that occur
+    form.on('error',  (err) =>{
+      console.log('An error has occured: \n' + err);
+      res.status(500).end();  
+    });
 
-  // once all the files have been uploaded, send a response to the client
-  form.on('end', function (project, fields, files) {
-    res.end('success');
-  });
+    // once all the files have been uploaded, send a response to the client
+    form.on('end',  (project, fields, files) => {
+      res.end('success');
+    });
 
-  // parse the incoming request containing the form data
-  form.parse(req);
+    // parse the incoming request containing the form data
+    form.parse(req);
+  }
+  catch(e){
+    console.log('upload file failed '); 
+    res.status(500).end(); 
+  }
 });
  
 module.exports = router;

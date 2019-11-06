@@ -1,4 +1,4 @@
- $(document).ready(function () { 
+$(document).ready(function () { 
     
   $('#btnExportCSV').click(function(rvt){
     
@@ -73,7 +73,7 @@ function checkExportJob(jobId){
            $('#loader_stats').css({ display: "none" }); 
 
           if(res.status == 'done')
-            window.location  = '/issuecsv/downloadCSV?jobId='+jobId; 
+            window.location  = '/api/forge/issuecsv/downloadCSV?jobId='+jobId; 
           else
             alert(res.status); 
       } 
