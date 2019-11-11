@@ -44,6 +44,8 @@ module.exports = {
            bimDatabase[hubId].projects[projectId].photoFolderId = null;
            bimDatabase[hubId].projects[projectId].fieldRootcauses = null;
            bimDatabase[hubId].projects[projectId].fieldIssueTypes = null;
+           bimDatabase[hubId].projects[projectId].companies = null;
+           bimDatabase[hubId].projects[projectId].roles = null; 
          }
       },
       refreshProjectInfo:function(hubId,projectId,v){
@@ -68,6 +70,10 @@ module.exports = {
             bimDatabase[hubId].projects[projectId].fieldIssueTypes = v.fieldIssueTypes;
           if(v.projectName)   
             bimDatabase[hubId].projects[projectId].projectName = v.projectName; 
+          if(v.companies)   
+            bimDatabase[hubId].projects[projectId].companies = v.companies; 
+          if(v.roles)   
+            bimDatabase[hubId].projects[projectId].roles = v.roles; 
         }  
       },
       getProjectRootContents:function(hubId,projectId){
@@ -123,6 +129,22 @@ module.exports = {
           for(var projectId in bimDatabase[hubId].projects){
             if(bimDatabase[hubId].projects[projectId].issuesContainerId == containerId) 
               return bimDatabase[hubId].projects[projectId].fieldRootcauses; 
+          } 
+        }  
+      },
+      getCompaniesByContainer:function(containerId){
+        for(var hubId in bimDatabase){ 
+          for(var projectId in bimDatabase[hubId].projects){
+            if(bimDatabase[hubId].projects[projectId].issuesContainerId == containerId) 
+              return bimDatabase[hubId].projects[projectId].companies; 
+          } 
+        }  
+      },
+      getRolesByContainer:function(containerId){
+        for(var hubId in bimDatabase){ 
+          for(var projectId in bimDatabase[hubId].projects){
+            if(bimDatabase[hubId].projects[projectId].issuesContainerId == containerId) 
+              return bimDatabase[hubId].projects[projectId].roles; 
           } 
         }  
       },
