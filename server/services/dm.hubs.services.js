@@ -125,13 +125,78 @@ function getHQUsersList(input,allUsers,pageOffset){
           }); 
 }  
 
+
+function getProjectCompanies(input){
+
+  return new Promise(function(resolve,reject){  
+
+    var accountId = input.hubId.replace('b.','')
+    var projectId = input.projectId.replace('b.','')
+
+    request({
+      url: config.hqv1.getCompanies(accountId,projectId),
+      method: "GET",
+      headers: {
+        'Authorization': 'Bearer ' + input.adminToken.credentials.access_token
+      }
+    }, function (error, response, body) {
+  
+      if (error != null) {
+        console.log('get companies failed!');  
+        reject({error:error});
+
+       }else if(body.errors != null){
+        reject({error:body.errors});
+       }
+       else{ 
+        console.log('get companies succeeded!');  
+        var json = JSON.parse(body); 
+        resolve({companies:json}); 
+      }
+    })
+  })
+} 
+
+
+function getProjectRoles(input){
+
+  return new Promise(function(resolve,reject){  
+
+    var accountId = input.hubId.replace('b.','')
+    var projectId = input.projectId.replace('b.','')
+
+    request({
+      url: config.hqv1.getRoles(accountId,projectId),
+      method: "GET",
+      headers: {
+        'Authorization': 'Bearer ' + input.credentials.access_token
+      }
+    }, function (error, response, body) {
+  
+      if (error != null) {
+        console.log('get roles failed!');  
+        reject({error:error});
+
+       }else if(body.errors != null){
+        reject({error:body.errors});
+       }
+       else{ 
+        console.log('get roles succeeded!');  
+        var json = JSON.parse(body); 
+        resolve({roles:json}); 
+      }
+    })
+  })
+} 
   
 
 
 module.exports = { 
   getHubs:getHubs,
   getUserProfile:getUserProfile,
-  getHQUsersList:getHQUsersList
+  getHQUsersList:getHQUsersList,
+  getProjectCompanies:getProjectCompanies,
+  getProjectRoles:getProjectRoles
 }
 
 

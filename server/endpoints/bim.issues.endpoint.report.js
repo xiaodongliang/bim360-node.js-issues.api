@@ -143,8 +143,10 @@ function dumpDocsIssueReports(isDocIssue,hubId,containerId,
     if(!isDocIssue)
      {
       issueByRootcause(eachIssue.attributes.root_cause,issue_stats_json);  
-      issueByType(eachIssue.attributes.issue_type,
+      issueByType(eachIssue.attributes.ng_issue_type_id,
                     containerId,issue_stats_json);
+      issueBySubType(eachIssue.attributes.ng_issue_subtype_id,
+                      containerId,issue_stats_json);
      } 
 
   }); 
@@ -223,6 +225,11 @@ function issueByType(type,containerId,issue_stats_json){
   issue_stats_json.type[typeStr]++; 
   else
   issue_stats_json.type[typeStr] = 1; 
+}
+
+function issueBySubType(type,containerId,issue_stats_json){ 
+  var typeStr = utility.findSubIssueType(containerId,type) 
+  //TODO
 }
 
 module.exports = router

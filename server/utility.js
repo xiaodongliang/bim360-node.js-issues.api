@@ -22,17 +22,7 @@ var fs = require('fs');
 var path = require('path');
 
 var bimDatabase = require('./bim.database');
-
-//currently, BIM 360 Issue API does not have endpoint to tell the 
-//enum of Role. Hard-code a few of them
-const docIssueRoleEnum = {
-  '7462015': 'IT',
-  '7462022': 'Designer',
-  '7462019':'Engineer' ,
-  '7462020':'Project Engineer',
-  '7462012':'Project Manager',
-  '7462016':'Skeduler' 
-}  
+ 
 
 var dir = __dirname + '/downloads';
 if (!fs.existsSync(dir)) {
@@ -67,7 +57,7 @@ module.exports = {
       .replace(/\//g, '0'); // replace '/' with '0'
   }, 
 
-  checkAssignTo:function(hubId,
+  checkAssignTo:function(hubId,containerId,
                          assigned_to_type,
                          assigned_to){ 
     switch(assigned_to_type){
@@ -75,10 +65,10 @@ module.exports = {
         return this.findUserName(hubId,assigned_to)
          break;
       case 'role':  
-        return parseInt(assigned_to)!=NaN?docIssueRoleEnum[assigned_to]:assigned_to
+        return this.findRoleById(containerId,assigned_to)
         break;
       case 'company':
-        return '<company>' 
+        return this.findCompanyById(containerId,assigned_to)
         break;
     } 
   },
@@ -116,20 +106,60 @@ module.exports = {
           return '<not set>'   
  
   },
-  findIssueType:function(containerId,typeKey) {
+  findIssueType:function(containerId,id) {
     var fieldIssueTypes = bimDatabase.getIssueTypesByContainer(containerId);
 
     if(fieldIssueTypes){
-        var foundtype = fieldIssueTypes.filter(function(item){ return item.attributes.key === typeKey; })
+        var foundtype = fieldIssueTypes.filter(function(item){ return item.id === id; })
         if(foundtype && foundtype.length && foundtype.length > 0)
-          return foundtype[0].attributes.title;
+          return foundtype[0].title;
         else
           return '<not set>' 
     }
     else
       return '<not set>' 
   },
-  
+
+  findSubIssueType:function(containerId,id) {
+    var fieldIssueTypes = bimDatabase.getIssueTypesByContainer(containerId); 
+    var subtypeStr = '<not set>' 
+
+    if(fieldIssueTypes){  
+        for(var index in fieldIssueTypes){
+           var oneTypeColl = fieldIssueTypes[index]
+           var foundtype = oneTypeColl.subtypes.filter(function(item){ return item.id === id; })
+           if(foundtype && foundtype.length && foundtype.length > 0){
+              subtypeStr =  foundtype[0].title
+              break
+           }
+        }  
+    }  
+    return subtypeStr
+  },
+  findCompanyById:function(containerId,id) {
+    var companies = bimDatabase.getCompaniesByContainer(containerId); 
+    if(companies){
+      var foundtype = companies.filter(function(item){ return item.id === id; })
+      if(foundtype && foundtype.length && foundtype.length > 0)
+        return foundtype[0].name;
+      else
+        return '<not set>' 
+    }
+    else
+     return '<not set>' 
+   },
+   findRoleById:function(containerId,member_group_id) {
+    var roles = bimDatabase.getRolesByContainer(containerId); 
+    if(roles){
+      var foundtype = roles.filter(function(item){ return item.member_group_id === member_group_id; })
+      if(foundtype && foundtype.length && foundtype.length > 0)
+        return foundtype[0].name;
+      else
+        return '<not set>' 
+    }
+    else
+     return '<not set>' 
+   }, 
    prepareItemForTree:function(_id, _text, _type, _children, _fileType, _fileName) {
     return {
       id: _id,
