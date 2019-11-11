@@ -19,14 +19,14 @@ var field_issue_stats_json = null;
 function resetStats(){
   doc_issue_stats_json = {overview:{},
                             modelvsproj:{},
-                            company:{},
+                            Assigned_to:{},
                             weekdue:{}
                            };
   field_issue_stats_json = {overview:{},
     modelvsproj:{},
     rootcause:{},
     type:{},
-    company:{},
+    Assignedto:{},
     weekdue:{}
     };
 }
