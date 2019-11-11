@@ -214,7 +214,7 @@ function refreshIssuebyCompany(company){
   };
 
 
-  var canvas = document.getElementById('issueByAssignedTo');
+  var canvas = document.getElementById('issueByCompany');
   var ctx = canvas.getContext('2d'); 
   
   issueByCompanyBar = new Chart(ctx, {
