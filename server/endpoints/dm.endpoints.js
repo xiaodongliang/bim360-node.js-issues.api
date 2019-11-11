@@ -201,6 +201,17 @@ function getAllProjectContent(projects,userServerToken) {
           bimDatabase.refreshProjectInfo(hubId,projectId,
             {rootFolderContents:result.contents})
 
+          return hubsServices.getProjectCompanies(subInput); 
+        })
+        .then(function (result) {
+          console.log('refreshing companies of one project') 
+          bimDatabase.refreshProjectInfo(hubId,projectId,{companies:result.companies })
+          return hubsServices.getProjectRoles(subInput); 
+        })
+        .then(function (result) {
+          console.log('refreshing roles of one project') 
+          bimDatabase.refreshProjectInfo(hubId,projectId,{roles:result.roles })
+ 
           subInput.oAuth = subInput.userServerToken.oAuth;
           subInput.credentials = subInput.userServerToken.credentials;
           return bimIssuesServicesRead.getFieldIssueTypes(subInput);
@@ -213,9 +224,10 @@ function getAllProjectContent(projects,userServerToken) {
         })  
         .then(function (result) {
           console.log('refreshing field root causes of one project') 
-          bimDatabase.refreshProjectInfo(hubId,projectId,{fieldIssueTypes:result.fieldRootcauses })
-          console.log('one project dump succeeded!');
-        })
+          bimDatabase.refreshProjectInfo(hubId,projectId,{fieldRootcauses:result.fieldRootcauses })
+          console.log('one project dump succeeded!'); 
+
+        }) 
         .catch(function (error) {
           console.log('one project dump failed!');
         }); 

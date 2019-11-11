@@ -146,6 +146,7 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
        if(!input.isDocIssue){
         header.push({id: 'rootcause', title: 'Root Cause'})
         header.push({id: 'issuetype', title: 'Issue Type'}),
+        header.push({id: 'subissuetype', title: 'Sub Issue Type'}), 
         header.push({id: 'associateChecklist', title: 'Associated to checklist?'}) 
         //check custom fields
         if(input.withCustomFields && input.allIssues[0].attributes.custom_attributes){
@@ -167,6 +168,7 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
         location:eachIssue.attributes.location_description,
         status:eachIssue.attributes.status, 
         assigned_to: utility.checkAssignTo(input.hubId,
+                         input.containerId,
                          eachIssue.attributes.assigned_to_type,
                          eachIssue.attributes.assigned_to), 
         assignee_type:eachIssue.attributes.assigned_to_type,
@@ -188,7 +190,8 @@ router.get('/issuecsv/startjob',jsonParser, function (req, res) {
 
     if(!input.isDocIssue){
         thisRecord.rootcause = eachIssue.attributes.root_cause;
-        thisRecord.issuetype = utility.findIssueType(input.containerId,eachIssue.attributes.issue_type);
+        thisRecord.issuetype = utility.findIssueType(input.containerId,eachIssue.attributes.ng_issue_type_id);
+        thisRecord.subissuetype = utility.findSubIssueType(input.containerId,eachIssue.attributes.ng_issue_subtype_id);
         thisRecord.associateChecklist = 'NO';
         if(input.withCustomFields && eachIssue.attributes.custom_attributes){
             var customFields = eachIssue.attributes.custom_attributes;
