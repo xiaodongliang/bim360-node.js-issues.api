@@ -139,11 +139,7 @@ function dumpDocsIssueReports(isDocIssue,hubId,containerId,
     issueWeekDue({due_date:eachIssue.attributes.due_date,
                   isclosed:eachIssue.attributes.status=='closed'},
                   weekDueStart,issue_stats_json);
-  
-    issueByRootcause(eachIssue.attributes.root_cause,issue_stats_json);  
-    issueByType(eachIssue.attributes.issue_type,
-                    containerId,issue_stats_json);
-     } 
+ 
 
     if(!isDocIssue)
      {
