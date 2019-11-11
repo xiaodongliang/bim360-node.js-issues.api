@@ -141,8 +141,8 @@ function dumpDocsIssueReports(isDocIssue,hubId,containerId,
                   weekDueStart,issue_stats_json);
  
 
-    if(!isDocIssue)
-     {
+#    if(!isDocIssue)
+ #    {
       issueByRootcause(eachIssue.attributes.root_cause,issue_stats_json);  
       issueByType(eachIssue.attributes.issue_type,
                     containerId,issue_stats_json);
