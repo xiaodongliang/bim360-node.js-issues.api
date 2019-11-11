@@ -214,7 +214,7 @@ function refreshIssuebyCompany(company){
   };
 
 
-  var canvas = document.getElementById('issueByType');
+  var canvas = document.getElementById('issueByCompany');
   var ctx = canvas.getContext('2d'); 
   
   issueByCompanyBar = new Chart(ctx, {
@@ -225,7 +225,7 @@ function refreshIssuebyCompany(company){
           maintainAspectRatio: true,
 					title: {
 						display: true,
-						text: 'Open Issue by Company/AK Change Assigned To'
+						text: 'Open Issue by Company'
 					},
 					tooltips: {
 						mode: 'index',
@@ -450,3 +450,4 @@ $(document).ready(function () {
 
 
 });
+ 
