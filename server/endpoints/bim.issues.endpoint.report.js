@@ -140,8 +140,8 @@ function dumpDocsIssueReports(isDocIssue,hubId,containerId,
                   isclosed:eachIssue.attributes.status=='closed'},
                   weekDueStart,issue_stats_json);
   
-      issueByRootcause(eachIssue.attributes.root_cause,issue_stats_json);  
-      issueByType(eachIssue.attributes.issue_type,
+    issueByRootcause(eachIssue.attributes.root_cause,issue_stats_json);  
+    issueByType(eachIssue.attributes.issue_type,
                     containerId,issue_stats_json);
      } 
 
