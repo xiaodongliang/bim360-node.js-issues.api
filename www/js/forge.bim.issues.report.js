@@ -133,7 +133,7 @@ function refreshModelvsProjectView(modelvsproj){
   };
 
 
-  var canvas = document.getElementById('issuetype');
+  var canvas = document.getElementById('issueModelvsProj');
   var ctx = canvas.getContext('2d');
  
   issueByRootCauseBar = new Chart(ctx, config);
@@ -167,7 +167,7 @@ function refreshRootcause(rootcause){
 
       title: {
         display: true,
-        text: 'Root Cause issue type test ak'
+        text: 'Root Cause'
       },
       tooltips: {
         mode: 'index',
