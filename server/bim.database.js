@@ -46,7 +46,6 @@ module.exports = {
            bimDatabase[hubId].projects[projectId].fieldIssueTypes = null;
            bimDatabase[hubId].projects[projectId].companies = null;
            bimDatabase[hubId].projects[projectId].roles = null; 
-           bimDatabase[hubId].projects[projectId].issuetype = null; 
          }
       },
       refreshProjectInfo:function(hubId,projectId,v){
@@ -69,8 +68,6 @@ module.exports = {
             bimDatabase[hubId].projects[projectId].fieldRootcauses = v.fieldRootcauses;
           if(v.fieldIssueTypes)   
             bimDatabase[hubId].projects[projectId].fieldIssueTypes = v.fieldIssueTypes;
-          if(v.issuetype)   
-            bimDatabase[hubId].projects[projectId].IssueType = v.issuetype;
           if(v.projectName)   
             bimDatabase[hubId].projects[projectId].projectName = v.projectName; 
           if(v.companies)   
@@ -140,14 +137,6 @@ module.exports = {
           for(var projectId in bimDatabase[hubId].projects){
             if(bimDatabase[hubId].projects[projectId].issuesContainerId == containerId) 
               return bimDatabase[hubId].projects[projectId].companies; 
-             } 
-        }  
-      },
-      getissuetypeByContainer:function(containerId){
-        for(var hubId in bimDatabase){ 
-          for(var projectId in bimDatabase[hubId].projects){
-            if(bimDatabase[hubId].projects[projectId].issuesContainerId == containerId) 
-              return bimDatabase[hubId].projects[projectId].issuetype; 
           } 
         }  
       },
