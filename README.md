@@ -1,10 +1,16 @@
 ```diff
-- WARNING: This sample has been DEPRECATED! This sample is based on old version of APS (Forge) API, especially BIM360 Issue API version 1. Some demos of this sample have been migrated with new APIs. They are posted on APS repositories.
-- Demo 1: Basic Usage of Issue API https://github.com/autodesk-platform-services/aps-bim360-issue-walkthrough
-- Demo 3: Dashboards of Issues Statistic https://github.com/autodesk-platform-services/aps-bim360-issue-dashboard
+- WARNING: This sample has been DEPRECATED!
+- This sample is based on old version of APS (Forge) API, especially BIM360 Issue API version 1.
+- Some demos of this sample have been migrated with new APIs. They are posted on APS repositories.
+- Demo 1: Basic Usage of Issue API
+- https://github.com/autodesk-platform-services/aps-bim360-issue-walkthrough
+- Demo 3: Dashboards of Issues Statistic
+- https://github.com/autodesk-platform-services/aps-bim360-issue-dashboard
 
-! Please refer to this blog about the details of BIM360 Issue API version 2 https://aps.autodesk.com/blog/bim-360-issues-version-2-api-released-1 
-! On https://github.com/autodesk-platform-services, there are also a few other samples of BIM360 Issue. https://github.com/orgs/autodesk-platform-services/repositories?q=issue&type=all&language=&sort= 
+! Please refer to this blog about the details of BIM360 Issue API version 2
+! https://aps.autodesk.com/blog/bim-360-issues-version-2-api-released-1 
+! On https://github.com/autodesk-platform-services, there are also a few other samples of BIM360 Issue.
+!  https://github.com/orgs/autodesk-platform-services/repositories?q=issue&type=all&language=&sort= 
 
 ```
 
